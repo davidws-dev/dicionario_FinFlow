@@ -1,11 +1,174 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=dicionario.html">
-    <title>Redirecionar</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinFlow - Materiais de Apoio</title>
+  <style>
+    /* Reset e base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(145deg, #f6f9fc 0%, #e9f1f8 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .container {
+      max-width: 720px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 40px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .logo {
+      font-size: 3.5rem;
+      margin-bottom: 0.2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0b2b44;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .sub {
+      font-size: 1.1rem;
+      color: #2c5778;
+      margin-bottom: 2.2rem;
+      border-bottom: 2px solid #cbdde9;
+      padding-bottom: 1rem;
+      display: inline-block;
+    }
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin: 1.8rem 0;
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.6rem 1.8rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2edf6;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: #0b2b44;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      text-align: left;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(26, 80, 120, 0.12);
+      border-color: #91bedb;
+    }
+    .card-icon {
+      font-size: 2.8rem;
+      flex-shrink: 0;
+    }
+    .card-content {
+      flex: 1;
+    }
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    .card-desc {
+      font-size: 0.95rem;
+      color: #3e5e76;
+      line-height: 1.4;
+    }
+    .card-badge {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 30px;
+      margin-left: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #4a6f89;
+      border-top: 1px solid #d5e4ef;
+      padding-top: 1.2rem;
+    }
+    .footer a {
+      color: #1a5a8a;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsivo */
+    @media (max-width: 550px) {
+      .container { padding: 1.5rem 1.2rem; }
+      h1 { font-size: 1.6rem; }
+      .card { padding: 1.2rem; flex-direction: column; text-align: center; gap: 0.6rem; }
+      .card-icon { font-size: 2.2rem; }
+      .card-title { font-size: 1.1rem; }
+      .card-desc { font-size: 0.85rem; }
+    }
+  </style>
 </head>
 <body>
-    <p>A redirecionar para o dicionário... <a href="dicionario.html">Clique aqui</a>.</p>
+  <div class="container">
+    <div class="logo">📘</div>
+    <h1>FinFlow</h1>
+    <div class="sub">Materiais de apoio técnico</div>
+
+    <div class="cards">
+      <a href="dicionario.html" class="card">
+        <span class="card-icon">📖</span>
+        <div class="card-content">
+          <div class="card-title">
+            Dicionário Técnico
+            <span class="card-badge">98+ termos</span>
+          </div>
+          <div class="card-desc">
+            Consulte definições, exemplos e contexto de uso de todos os conceitos do projeto.
+          </div>
+        </div>
+      </a>
+
+      <a href="quiz.html" class="card">
+        <span class="card-icon">🧠</span>
+        <div class="card-content">
+          <div class="card-title">
+            Quiz Interativo
+            <span class="card-badge">Teste os seus conhecimentos</span>
+          </div>
+          <div class="card-desc">
+            Responda a perguntas de múltipla escolha, veja a explicação e aprenda com dicas.
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="footer">
+      Projeto FinFlow &bull; <a href="https://github.com/davidws-dev/dicionario_FinFlow" target="_blank">GitHub</a>
+    </div>
+  </div>
 </body>
 </html>

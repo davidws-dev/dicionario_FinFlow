@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Técnico – FinFlow</title>
+  <style>
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .quiz-wrap {
+      max-width: 820px;
+      width: 100%;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 1.8rem 1.5rem;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      border-left: 3px solid #3b82f6;
+      padding-left: 12px;
+    }
+    /* ===== FILTROS ===== */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+    }
+    .filter-btn {
+      font-size: 0.7rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid #d1d5db;
+      background: white;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .filter-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    .filter-btn:hover:not(.active) {
+      background: #f1f5f9;
+    }
+
+    /* ===== PERGUNTA ===== */
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .option {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .option:hover:not(.disabled) {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .option .letter {
+      font-weight: 700;
+      color: #94a3b8;
+      min-width: 24px;
+    }
+    .option.correct {
+      background: #dcfce7;
+      border-color: #22c55e;
+    }
+    .option.correct .letter { color: #16a34a; }
+    .option.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+    .option.wrong .letter { color: #dc2626; }
+    .option.disabled { cursor: default; opacity: 0.8; }
+    .option.reveal-correct {
+      background: #dcfce7;
+      border-color: #22c55e;
+    }
+
+    /* ===== FEEDBACK ===== */
+    .feedback {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      border-left: 4px solid #3b82f6;
+    }
+    .feedback.show { display: block; }
+    .feedback .explanation {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+    .feedback .tip {
+      font-size: 0.85rem;
+      color: #475569;
+      background: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    /* ===== BOTÕES ===== */
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 0.5rem;
+    }
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn:hover:not(:disabled) { background: #2563eb; }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .btn-secondary:hover:not(:disabled) { background: #cbd5e1; }
+
+    /* ===== RESULTADO ===== */
+    .result {
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+    .result .score {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #3b82f6;
+    }
+    .result .detail {
+      margin-top: 0.5rem;
+      color: #64748b;
+    }
+    .result .per-topic {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 1rem 0;
+    }
+    .result .per-topic span {
+      background: #f1f5f9;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 600px) {
+      .quiz-wrap { padding: 1.2rem 1rem; }
+      h1 { font-size: 1.3rem; }
+      .question-text { font-size: 1.05rem; }
+      .option { padding: 10px 14px; font-size: 0.9rem; }
+      .filter-btn { font-size: 0.65rem; padding: 4px 10px; }
+      .btn { padding: 8px 18px; font-size: 0.85rem; }
+    }
+    @media (max-width: 400px) {
+      .actions { flex-direction: column; align-items: stretch; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-wrap" id="app">
+  <h1>🧠 Quiz FinFlow</h1>
+  <div class="subtitle">Testa os teus conhecimentos sobre os termos técnicos do projeto</div>
+
+  <!-- Filtros -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-topic="all">Todos</button>
+    <button class="filter-btn" data-topic="protocol">Protocolo</button>
+    <button class="filter-btn" data-topic="security">Segurança</button>
+    <button class="filter-btn" data-topic="java">Java / Spring</button>
+    <button class="filter-btn" data-topic="db">Base de dados</button>
+    <button class="filter-btn" data-topic="frontend">Frontend</button>
+    <button class="filter-btn" data-topic="android">Android</button>
+    <button class="filter-btn" data-topic="infra">Infra</button>
+  </div>
+
+  <!-- Área de jogo -->
+  <div id="gameArea">
+    <div class="question-header">
+      <span id="progress">Pergunta 1 de 10</span>
+      <span id="scoreDisplay">✅ 0</span>
+    </div>
+    <div class="question-text" id="questionText">Carregando pergunta...</div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="feedback" id="feedback">
+      <div class="explanation" id="explanationText"></div>
+      <div class="tip" id="tipText"></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" id="resetBtn" style="display:none;">↻ Recomeçar</button>
+      <button class="btn" id="nextBtn" disabled>Próxima →</button>
+    </div>
+  </div>
+
+  <!-- Resultado (oculto) -->
+  <div id="resultArea" style="display:none;" class="result">
+    <div class="score" id="finalScore">0%</div>
+    <div class="detail" id="finalDetail"></div>
+    <div class="per-topic" id="perTopicStats"></div>
+    <button class="btn" id="restartFromResult">↻ Refazer quiz</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  PERGUNTAS – baseadas no dicionário FinFlow
+// ============================================================
+const questions = [
+  // ---------- PROTOCOLO ----------
+  {
+    topic: 'protocol',
+    question: 'O que significa a sigla REST?',
+    options: [
+      'Representational State Transfer',
+      'Responsive Encapsulated System Token',
+      'Reliable Endpoint Service Test',
+      'Reactive Event Streaming Technology'
+    ],
+    correct: 0,
+    explanation: 'REST (Representational State Transfer) é um estilo arquitetural para APIs baseado em HTTP, com recursos identificados por URLs e operações stateless.',
+    tip: 'Lembre-se: REST usa verbos HTTP (GET, POST, PUT, DELETE) e respostas em JSON.'
+  },
+  {
+    topic: 'protocol',
+    question: 'Qual verbo HTTP é idempotente e não deve ter corpo na requisição?',
+    options: ['POST', 'PUT', 'GET', 'PATCH'],
+    correct: 2,
+    explanation: 'GET é usado apenas para leitura, é idempotente e não possui corpo. POST não é idempotente.',
+    tip: 'Idempotência significa que chamar o mesmo endpoint várias vezes produz o mesmo efeito.'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que é o JSON?',
+    options: [
+      'Um protocolo de comunicação',
+      'Um formato de texto para troca de dados estruturados',
+      'Uma linguagem de programação',
+      'Um sistema de base de dados'
+    ],
+    correct: 1,
+    explanation: 'JSON (JavaScript Object Notation) é um formato leve de intercâmbio de dados, amplamente usado em APIs REST.',
+    tip: 'JSON é baseado em pares chave-valor e suporta arrays, números, strings e booleanos.'
+  },
+
+  // ---------- SEGURANÇA ----------
+  {
+    topic: 'security',
+    question: 'Qual a principal característica do JWT?',
+    options: [
+      'É armazenado no servidor em cada sessão',
+      'É stateless e contém informações assinadas',
+      'Requer um cookie de sessão',
+      'É usado apenas para autenticação básica'
+    ],
+    correct: 1,
+    explanation: 'JWT é stateless: toda a informação necessária está no token, assinado para evitar adulteração.',
+    tip: 'O JWT tem três partes: header, payload e signature. A assinatura garante integridade.'
+  },
+  {
+    topic: 'security',
+    question: 'Por que o BCrypt é preferível para armazenar passwords?',
+    options: [
+      'Porque é mais rápido que outros algoritmos',
+      'Porque gera hashes com salt automático e é intencionalmente lento',
+      'Porque não precisa de salt',
+      'Porque é reversível'
+    ],
+    correct: 1,
+    explanation: 'BCrypt é lento para dificultar ataques de força bruta e usa salt aleatório para cada password.',
+    tip: 'O salt impede que duas passwords iguais tenham o mesmo hash, derrotando rainbow tables.'
+  },
+  {
+    topic: 'security',
+    question: 'Para que serve a configuração .csrf(csrf -> csrf.disable()) no Spring Security?',
+    options: [
+      'Ativa a proteção contra CSRF',
+      'Desativa a proteção CSRF, adequada para APIs stateless com JWT',
+      'Bloqueia todos os pedidos',
+      'Ativa a autenticação básica'
+    ],
+    correct: 1,
+    explanation: 'Em APIs stateless com JWT (sem cookies de sessão), a proteção CSRF não é necessária e pode ser desativada.',
+    tip: 'CSRF é relevante quando usamos cookies de sessão. Com JWT no header, estamos seguros.'
+  },
+
+  // ---------- JAVA / SPRING ----------
+  {
+    topic: 'java',
+    question: 'O que é um Bean no Spring?',
+    options: [
+      'Um objeto Java qualquer',
+      'Um objeto gerido pelo container IoC do Spring',
+      'Uma classe anotada com @Entity',
+      'Um método de serviço'
+    ],
+    correct: 1,
+    explanation: 'Beans são objetos instanciados, configurados e geridos pelo container Spring (ApplicationContext).',
+    tip: 'Beans podem ser criados com @Component, @Service, @Repository ou @Bean em classes de configuração.'
+  },
+  {
+    topic: 'java',
+    question: 'Qual anotação define que um método deve ser executado dentro de uma transação de base de dados?',
+    options: ['@Transactional', '@PrePersist', '@Autowired', '@PostConstruct'],
+    correct: 0,
+    explanation: '@Transactional garante que as operações de BD num método sejam atómicas (rollback em caso de erro).',
+    tip: 'Pode usar readOnly=true para transações apenas de leitura, otimizando a performance.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é um DTO e por que é usado?',
+    options: [
+      'É a entidade JPA propriamente dita',
+      'É um objeto que define o contrato da API, separando a camada de dados da camada de apresentação',
+      'É um repositório Spring Data',
+      'É uma exceção personalizada'
+    ],
+    correct: 1,
+    explanation: 'DTOs (Data Transfer Objects) servem para desacoplar a estrutura interna da entidade da API pública, evitando expor campos sensíveis.',
+    tip: 'Use DTOs para receber e devolver dados nos controladores, nunca as entidades diretamente.'
+  },
+
+  // ---------- BASE DE DADOS ----------
+  {
+    topic: 'db',
+    question: 'O que faz a propriedade spring.jpa.hibernate.ddl-auto=update?',
+    options: [
+      'Elimina todas as tabelas no arranque',
+      'Atualiza o esquema da BD automaticamente com base nas entidades, sem perder dados',
+      'Valida apenas se o esquema está correto',
+      'Gera scripts SQL para migração'
+    ],
+    correct: 1,
+    explanation: 'ddl-auto=update compara as entidades JPA com as tabelas existentes e adiciona colunas/tabelas que faltam.',
+    tip: 'Em produção, é preferível usar ferramentas de migração como Flyway para controlo total.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é o HikariCP?',
+    options: [
+      'Um driver JDBC',
+      'Um pool de conexões de alto desempenho',
+      'Uma ferramenta de migração',
+      'Um tipo de dado do PostgreSQL'
+    ],
+    correct: 1,
+    explanation: 'HikariCP é o pool de conexões padrão do Spring Boot, otimizado para alta performance.',
+    tip: 'Mantém conexões abertas para reutilização, reduzindo a latência de cada requisição.'
+  },
+
+  // ---------- FRONTEND ----------
+  {
+    topic: 'frontend',
+    question: 'Para que serve a Fetch API no JavaScript?',
+    options: [
+      'Para manipular o DOM',
+      'Para fazer requisições HTTP assíncronas',
+      'Para estilizar elementos',
+      'Para armazenar dados localmente'
+    ],
+    correct: 1,
+    explanation: 'Fetch API é a forma moderna de fazer pedidos HTTP (GET, POST, etc.) a partir do browser.',
+    tip: 'Fetch devolve Promises, podendo ser usado com async/await para um código mais limpo.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que o método .toLocaleString() faz em JavaScript?',
+    options: [
+      'Converte uma string para JSON',
+      'Formata números e datas de acordo com a localidade (ex: pt-PT)',
+      'Ordena um array',
+      'Cria uma nova Promise'
+    ],
+    correct: 1,
+    explanation: 'toLocaleString() formata valores monetários, datas e números no formato da região definida.',
+    tip: 'Use {style:"currency", currency:"EUR"} para exibir valores em euros corretamente.'
+  },
+
+  // ---------- ANDROID ----------
+  {
+    topic: 'android',
+    question: 'No Jetpack Compose, qual função é usada para criar uma lista que renderiza apenas os itens visíveis?',
+    options: ['Column', 'LazyColumn', 'ListView', 'ScrollView'],
+    correct: 1,
+    explanation: 'LazyColumn é otimizada para listas grandes, renderizando apenas os elementos que aparecem na tela.',
+    tip: 'LazyColumn é eficiente para listas de despesas, receitas, etc. em aplicações Android.'
+  },
+  {
+    topic: 'android',
+    question: 'Qual biblioteca é usada no Android para fazer chamadas HTTP de forma declarativa com anotações?',
+    options: ['OkHttp', 'Retrofit', 'Volley', 'Ktor'],
+    correct: 1,
+    explanation: 'Retrofit permite definir endpoints com anotações @GET, @POST, etc., e gera a implementação automaticamente.',
+    tip: 'Retrofit normalmente é combinado com OkHttp para o transporte e interceptors.'
+  },
+
+  // ---------- INFRA ----------
+  {
+    topic: 'infra',
+    question: 'O que é uma variável de ambiente no contexto de deploy?',
+    options: [
+      'Uma configuração fixa no código-fonte',
+      'Um valor externo à aplicação, usado para configuração sensível (ex: credenciais)',
+      'Um tipo de variável Java',
+      'Um comando do sistema operativo'
+    ],
+    correct: 1,
+    explanation: 'Variáveis de ambiente permitem passar configurações (credenciais, URLs) sem expô-las no código.',
+    tip: 'No Railway, configuramos DATABASE_URL, JWT_SECRET, etc. como variáveis de ambiente.'
+  },
+  {
+    topic: 'infra',
+    question: 'Para que serve o endpoint /api/health no FinFlow?',
+    options: [
+      'Para autenticação',
+      'Para verificar se a aplicação e a base de dados estão operacionais',
+      'Para listar todas as despesas',
+      'Para atualizar o perfil do utilizador'
+    ],
+    correct: 1,
+    explanation: 'O health check é usado por ferramentas de monitorização para confirmar que o serviço está disponível.',
+    tip: 'Devolve status, uptime e estado da ligação à base de dados.'
+  }
+];
+
+// ============================================================
+//  LÓGICA DO QUIZ
+// ============================================================
+const app = {
+  filteredQuestions: [],
+  currentIndex: 0,
+  score: 0,
+  answered: false,
+  selectedTopic: 'all',
+  totalQuestions: 0,
+
+  // DOM refs
+  el: {
+    filterBar: document.getElementById('filterBar'),
+    gameArea: document.getElementById('gameArea'),
+    resultArea: document.getElementById('resultArea'),
+    progress: document.getElementById('progress'),
+    scoreDisplay: document.getElementById('scoreDisplay'),
+    questionText: document.getElementById('questionText'),
+    optionsContainer: document.getElementById('optionsContainer'),
+    feedback: document.getElementById('feedback'),
+    explanationText: document.getElementById('explanationText'),
+    tipText: document.getElementById('tipText'),
+    nextBtn: document.getElementById('nextBtn'),
+    resetBtn: document.getElementById('resetBtn'),
+    finalScore: document.getElementById('finalScore'),
+    finalDetail: document.getElementById('finalDetail'),
+    perTopicStats: document.getElementById('perTopicStats'),
+    restartFromResult: document.getElementById('restartFromResult'),
+  },
+
+  init() {
+    this.setupFilters();
+    this.setupButtons();
+    this.loadQuestions('all');
+    this.renderQuestion();
+  },
+
+  setupFilters() {
+    const buttons = this.el.filterBar.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.selectedTopic = btn.dataset.topic;
+        this.loadQuestions(this.selectedTopic);
+        this.currentIndex = 0;
+        this.score = 0;
+        this.renderQuestion();
+        this.el.resultArea.style.display = 'none';
+        this.el.gameArea.style.display = 'block';
+        this.el.resetBtn.style.display = 'none';
+      });
+    });
+  },
+
+  setupButtons() {
+    this.el.nextBtn.addEventListener('click', () => this.nextQuestion());
+    this.el.resetBtn.addEventListener('click', () => this.resetQuiz());
+    this.el.restartFromResult.addEventListener('click', () => this.resetQuiz());
+  },
+
+  loadQuestions(topic) {
+    if (topic === 'all') {
+      this.filteredQuestions = [...questions];
+    } else {
+      this.filteredQuestions = questions.filter(q => q.topic === topic);
+    }
+    // Embaralhar para evitar viés de ordem
+    this.filteredQuestions = this.shuffleArray(this.filteredQuestions);
+    this.totalQuestions = this.filteredQuestions.length;
+    this.currentIndex = 0;
+    this.score = 0;
+  },
+
+  shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  },
+
+  renderQuestion() {
+    if (this.totalQuestions === 0) {
+      this.el.questionText.textContent = 'Nenhuma pergunta disponível para este tema.';
+      this.el.optionsContainer.innerHTML = '';
+      this.el.feedback.classList.remove('show');
+      this.el.nextBtn.disabled = true;
+      this.el.progress.textContent = '0 perguntas';
+      return;
+    }
+
+    const q = this.filteredQuestions[this.currentIndex];
+    this.el.progress.textContent = `Pergunta ${this.currentIndex+1} de ${this.totalQuestions}`;
+    this.el.scoreDisplay.textContent = `✅ ${this.score}`;
+    this.el.questionText.textContent = q.question;
+
+    // Opções
+    const letters = ['A', 'B', 'C', 'D'];
+    let html = '';
+    q.options.forEach((opt, idx) => {
+      html += `
+        <div class="option" data-index="${idx}">
+          <span class="letter">${letters[idx]}.</span>
+          <span>${opt}</span>
+        </div>
+      `;
+    });
+    this.el.optionsContainer.innerHTML = html;
+
+    // Remover feedback
+    this.el.feedback.classList.remove('show');
+    this.el.nextBtn.disabled = true;
+    this.answered = false;
+
+    // Adicionar listeners
+    this.el.optionsContainer.querySelectorAll('.option').forEach(el => {
+      el.addEventListener('click', () => this.handleOptionClick(el));
+    });
+  },
+
+  handleOptionClick(el) {
+    if (this.answered) return;
+    this.answered = true;
+
+    const q = this.filteredQuestions[this.currentIndex];
+    const selected = parseInt(el.dataset.index);
+    const isCorrect = (selected === q.correct);
+
+    if (isCorrect) this.score++;
+
+    // Desabilitar todas as opções
+    const allOpts = this.el.optionsContainer.querySelectorAll('.option');
+    allOpts.forEach(opt => opt.classList.add('disabled'));
+
+    // Marcar correta
+    allOpts[q.correct].classList.add('correct');
+    // Marcar errada se for o caso
+    if (!isCorrect) {
+      el.classList.add('wrong');
+    }
+
+    // Mostrar feedback
+    this.el.explanationText.textContent = q.explanation;
+    this.el.tipText.textContent = `💡 Dica: ${q.tip}`;
+    this.el.feedback.classList.add('show');
+
+    // Atualizar score
+    this.el.scoreDisplay.textContent = `✅ ${this.score}`;
+
+    // Ativar botão próximo
+    this.el.nextBtn.disabled = false;
+  },
+
+  nextQuestion() {
+    if (this.currentIndex + 1 < this.totalQuestions) {
+      this.currentIndex++;
+      this.renderQuestion();
+    } else {
+      // Fim do quiz
+      this.showResult();
+    }
+  },
+
+  showResult() {
+    this.el.gameArea.style.display = 'none';
+    this.el.resultArea.style.display = 'block';
+
+    const total = this.totalQuestions;
+    const correct = this.score;
+    const percent = Math.round((correct / total) * 100);
+    this.el.finalScore.textContent = `${percent}%`;
+    this.el.finalDetail.textContent = `Acertaste ${correct} de ${total} perguntas.`;
+
+    // Estatísticas por tópico (se houver mais de uma pergunta por tópico)
+    const stats = {};
+    this.filteredQuestions.forEach(q => {
+      if (!stats[q.topic]) stats[q.topic] = { total: 0, correct: 0 };
+      stats[q.topic].total++;
+    });
+    // Precisamos de saber quantas acertou por tópico – para isso, percorremos as perguntas e comparamos com a resposta selecionada.
+    // Como não guardamos o histórico, vamos estimar com base na pontuação geral.
+    // Melhor: recalcular com base nas respostas (não guardadas). Vamos apenas mostrar a pontuação geral.
+
+    // Para simplificar, mostramos apenas a pontuação geral.
+    this.el.perTopicStats.innerHTML = '';
+    // Opcional: mostrar distribuição geral
+    const topics = Object.keys(stats);
+    if (topics.length > 1) {
+      let html = '<div style="margin-top:0.5rem;font-weight:600;">Temas abrangidos:</div><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">';
+      topics.forEach(t => {
+        const count = stats[t].total;
+        html += `<span style="background:#e2e8f0;padding:2px 12px;border-radius:16px;font-size:0.8rem;">${t} (${count})</span>`;
+      });
+      html += '</div>';
+      this.el.perTopicStats.innerHTML = html;
+    }
+
+    this.el.resetBtn.style.display = 'inline-block';
+  },
+
+  resetQuiz() {
+    this.loadQuestions(this.selectedTopic);
+    this.currentIndex = 0;
+    this.score = 0;
+    this.el.resultArea.style.display = 'none';
+    this.el.gameArea.style.display = 'block';
+    this.el.resetBtn.style.display = 'none';
+    this.renderQuestion();
+  }
+};
+
+// Iniciar
+document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
+</body>
+</html>

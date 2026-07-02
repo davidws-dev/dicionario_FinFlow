@@ -1,12 +1,23 @@
-# 📚 Dicionário Técnico do FinFlow
+# 📚 Materiais de Apoio Técnico – FinFlow
 
-Este repositório contém um **dicionário interativo** com todos os termos técnicos utilizados no projeto **FinFlow** — uma aplicação de gestão financeira pessoal desenvolvida no âmbito do curso.
+Este repositório reúne materiais de apoio técnico para o projeto **FinFlow** — uma aplicação de gestão financeira pessoal desenvolvida no âmbito do curso.
 
-O dicionário foi criado para servir como material de apoio durante a defesa do projeto, ajudando a explicar conceitos de backend, frontend, segurança, base de dados, Android e infraestrutura de forma clara e contextualizada.
+Os materiais foram criados para servir de suporte durante a defesa do projeto, ajudando a explicar conceitos de backend, frontend, segurança, base de dados, Android e infraestrutura de forma clara, contextualizada e interativa.
 
 ---
 
-## 🚀 Funcionalidades
+## 🧭 Conteúdo do repositório
+
+| Ficheiro | Descrição |
+|----------|-----------|
+| **`index.html`** | Página inicial com menu de navegação para os dois recursos principais. |
+| **`dicionario.html`** | Dicionário interativo com definições, exemplos e contexto de uso de mais de 98 termos técnicos. |
+| **`quiz.html`** | Quiz de múltipla escolha com perguntas sobre os termos do dicionário — ideal para testar e consolidar conhecimentos. |
+| **`README.md`** | Este ficheiro de documentação. |
+
+---
+
+## 📖 Dicionário Técnico – Funcionalidades
 
 - **Pesquisa em tempo real** — procura por termo, definição ou contexto.
 - **Filtros por categoria** — protocolo, segurança, Java/Spring, base de dados, frontend, Android e infraestrutura.
@@ -18,9 +29,19 @@ O dicionário foi criado para servir como material de apoio durante a defesa do 
 
 ---
 
-## 🧠 Conteúdo
+## 🧠 Quiz Interativo – Funcionalidades
 
-Atualmente, o dicionário contém **mais de 95 termos** organizados nas seguintes áreas:
+- **Filtro por tema** — escolha apenas perguntas de uma categoria específica.
+- **Feedback imediato** — ao responder, vê a opção correta e a errada.
+- **Explicação + Dica** — cada pergunta inclui uma breve explicação e uma dica para consolidar o conhecimento.
+- **Pontuação em tempo real** — acompanha o teu progresso.
+- **Resultado final** — mostra percentagem de acertos e distribuição por tema.
+
+---
+
+## 🧠 Conteúdo do Dicionário
+
+Atualmente, o dicionário contém **98+ termos** organizados nas seguintes áreas:
 
 | Categoria | Exemplos |
 |-----------|----------|
@@ -38,18 +59,19 @@ Atualmente, o dicionário contém **mais de 95 termos** organizados nas seguinte
 ## 📂 Como visualizar
 
 1. **Descarrega** ou clona este repositório.
-2. Abre o ficheiro **`dicionario.html`** diretamente no teu browser (não precisa de servidor, pois é uma página autónoma).
-3. Usa a barra de pesquisa ou os botões de filtro para explorar os termos.
+2. Abre o ficheiro **`index.html`** no teu browser — a partir daí podes aceder ao dicionário e ao quiz.
+3. Também podes abrir diretamente `dicionario.html` ou `quiz.html` se preferires.
 
-> 💡 *Dica:* Podes hospedar esta página no **GitHub Pages** para teres sempre acesso online.
+> 💡 *Dica:* Podes hospedar estes ficheiros no **GitHub Pages** ou na **Vercel** para teres acesso online. O projeto já está configurado para funcionar em qualquer servidor estático.
 
 ---
 
 ## 🛠️ Tecnologias utilizadas
 
-- **HTML5** — estrutura da página
-- **CSS3** — estilização com variáveis e layout responsivo
-- **JavaScript** — lógica de pesquisa, filtros e renderização dinâmica
+- **HTML5** — estrutura das páginas
+- **CSS3** — estilização com variáveis, glassmorphism, layout responsivo
+- **JavaScript** — lógica de pesquisa, filtros, renderização dinâmica e quiz interativo
+- **Vercel** — hospedagem e deploy automático
 
 ---
 
@@ -59,15 +81,15 @@ O **FinFlow** é uma aplicação full-stack com:
 - **Backend:** Spring Boot + Spring Security + JWT + PostgreSQL
 - **Frontend Web:** HTML, CSS, JavaScript com Chart.js e Fetch API
 - **Mobile:** Android com Jetpack Compose e Retrofit
-- **Deploy:** Railway (PaaS)
+- **Deploy:** Railway (PaaS) e Vercel
 
-Este dicionário serve como guia de referência rápida para todos os conceitos aplicados no desenvolvimento.
+Estes materiais de apoio complementam o projeto, ajudando a consolidar os conceitos abordados.
 
 ---
 
 ## 🤝 Como contribuir
 
-Sugestões de novos termos ou correções são bem-vindas!
+Sugestões de novos termos, perguntas ou correções são bem-vindas!
 Para contribuir:
 1. Faz um *fork* deste repositório.
 2. Cria uma *branch* com a tua melhoria (`git checkout -b minha-melhoria`).
