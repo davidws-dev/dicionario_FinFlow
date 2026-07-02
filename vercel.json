@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/dicionario.html", "destination": "/dicionario.html" }
+  ]
+}
