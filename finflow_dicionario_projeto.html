@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estrutura do FinFlow – Pastas, Ficheiros e Métodos</title>
+  <style>
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ===== CABEÇALHO + BOTÃO VOLTAR ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0b2b44;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header h1 span {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #64748b;
+      margin-left: 6px;
+    }
+    .btn-voltar {
+      background: #e2e8f0;
+      color: #1e293b;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-voltar:hover {
+      background: #cbd5e1;
+    }
+    .btn-voltar svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ===== DICIONÁRIO (adaptado do código fornecido) ===== */
+    .dw { padding: .2rem 0; }
+    .dw input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: .75rem;
+      padding: 10px 14px;
+      font-size: 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: white;
+      color: #1e293b;
+    }
+    .dw input:focus {
+      outline: 2px solid #3b82f6;
+      border-color: transparent;
+    }
+
+    .fb {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: .9rem;
+    }
+    .fb button {
+      font-size: 11.5px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      border: 1px solid #d1d5db;
+      background: white;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .fb button.on {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    .fb button:hover:not(.on) {
+      background: #f1f5f9;
+    }
+
+    #dcount {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: .8rem;
+    }
+
+    .dgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .dc {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: .85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      transition: box-shadow 0.15s;
+    }
+    .dc:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .dh {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .dt {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0b2b44;
+      font-family: 'Courier New', monospace;
+      word-break: break-word;
+    }
+    .db {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+    /* Cores dos badges (adaptadas) */
+    .b-pasta  { background: #e8f0fe; color: #1a56db; }
+    .b-config { background: #fef3c7; color: #92400e; }
+    .b-ctrl   { background: #f0fdf4; color: #15803d; }
+    .b-svc    { background: #fdf4ff; color: #7e22ce; }
+    .b-repo   { background: #fff7ed; color: #c2410c; }
+    .b-model  { background: #ecfdf5; color: #065f46; }
+    .b-dto    { background: #eff6ff; color: #1d4ed8; }
+    .b-front  { background: #fdf2f8; color: #be185d; }
+    .b-android{ background: #e8f5e9; color: #1b5e20; }
+    .b-metodo { background: #f8fafc; color: #475569; border: 0.5px solid #cbd5e1; }
+    .b-annot  { background: #fef9c3; color: #713f12; }
+
+    .dsub {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+    .dmean {
+      font-size: 12.5px;
+      color: #1e293b;
+      line-height: 1.55;
+    }
+    .duse {
+      font-size: 11.5px;
+      color: #475569;
+      border-left: 2px solid #cbd5e1;
+      padding-left: 7px;
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+    .duse strong {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 1.3rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-voltar {
+        justify-content: center;
+        padding: 10px;
+      }
+      .dgrid {
+        grid-template-columns: 1fr !important; /* FORÇA UMA COLUNA */
+        gap: 10px;
+      }
+      .dc {
+        padding: 0.75rem;
+      }
+      .dt {
+        font-size: 13px;
+      }
+      .fb button {
+        font-size: 10px;
+        padding: 4px 8px;
+        flex: 1 0 auto;
+        text-align: center;
+        min-width: 50px;
+      }
+      .dw input {
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.1rem;
+      }
+      .header h1 span {
+        display: block;
+        font-size: 0.7rem;
+        margin-left: 0;
+      }
+      .fb button {
+        font-size: 9px;
+        padding: 3px 6px;
+        min-width: 40px;
+      }
+      .dt {
+        font-size: 12px;
+      }
+      .dmean {
+        font-size: 11.5px;
+      }
+      .duse {
+        font-size: 10.5px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- ===== CABEÇALHO ===== -->
+  <div class="header">
+    <h1>
+      📂 Estrutura do FinFlow
+      <span>Pastas, ficheiros, métodos e termos do código real</span>
+    </h1>
+    <a href="index.html" class="btn-voltar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Voltar
+    </a>
+  </div>
+
+  <!-- ===== DICIONÁRIO (código original adaptado) ===== -->
+  <h2 class="sr-only">Dicionário interativo de pastas, ficheiros, métodos e termos do projeto FinFlow — extraído do código real</h2>
+
+  <div class="dw">
+    <input type="text" id="dsearch" placeholder="Pesquisar... ex: ExpenseService, @Entity, findByUser, dashboard.js" oninput="rd()">
+    <div class="fb" id="fb">
+      <button class="on" data-c="all" onclick="sf('all',this)">Todos</button>
+      <button data-c="pasta" onclick="sf('pasta',this)">📁 Pastas</button>
+      <button data-c="config" onclick="sf('config',this)">⚙️ Config / Segurança</button>
+      <button data-c="ctrl" onclick="sf('ctrl',this)">🌐 Controladores</button>
+      <button data-c="svc" onclick="sf('svc',this)">⚙️ Serviços</button>
+      <button data-c="repo" onclick="sf('repo',this)">🗄️ Repositórios</button>
+      <button data-c="model" onclick="sf('model',this)">🧱 Modelos / Entidades</button>
+      <button data-c="dto" onclick="sf('dto',this)">📦 DTOs</button>
+      <button data-c="annot" onclick="sf('annot',this)">🏷️ Anotações</button>
+      <button data-c="metodo" onclick="sf('metodo',this)">🔧 Métodos</button>
+      <button data-c="front" onclick="sf('front',this)">💻 Frontend Web</button>
+      <button data-c="android" onclick="sf('android',this)">📱 Android</button>
+    </div>
+    <div id="dcount"></div>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+</div>
+
+<script>
+const T=[
+/* ===== PASTAS ===== */
+{t:"src/main/java/com/finflow/backend",s:"Raiz do código Java",c:"pasta",b:"b-pasta",m:"Pacote raiz de toda a lógica Java do backend. Contém os sub-pacotes que dividem o projeto por responsabilidade: config, controller, dto, exception, model, repository, service.",u:"Cada sub-pasta corresponde a uma camada da arquitectura. O Spring faz o scan automático de todos os componentes a partir desta raiz por causa do @SpringBootApplication."},
+{t:"config/",s:"Segurança, JWT e Filtros",c:"config",b:"b-config",m:"Contém os três ficheiros que definem o comportamento de segurança de toda a aplicação: SecurityConfig.java, JwtUtil.java e JwtAuthenticationFilter.java.",u:"É o pacote mais crítico do projeto. Qualquer pedido HTTP passa primeiro pelo JwtAuthenticationFilter antes de chegar ao controlador."},
+{t:"controller/",s:"Endpoints REST HTTP",c:"pasta",b:"b-pasta",m:"Contém os 10 controladores REST que expõem os endpoints da API. Cada controlador trata de um recurso diferente e delega a lógica nos serviços correspondentes.",u:"Os controladores recebem o pedido HTTP, extraem os dados do corpo/URL, chamam o serviço, e devolvem a resposta JSON com o código HTTP adequado."},
+{t:"service/",s:"Lógica de negócio",c:"pasta",b:"b-pasta",m:"Contém os 9 serviços que implementam as regras de negócio do FinFlow. É aqui que vivem os cálculos, validações e orquestração entre repositórios.",u:"Nenhum controlador acede directamente a um repositório — passa sempre pelo serviço. Os serviços são anotados com @Service e são singletons geridos pelo Spring."},
+{t:"repository/",s:"Acesso à base de dados",c:"pasta",b:"b-pasta",m:"Contém 7 interfaces que estendem JpaRepository. O Spring Data JPA gera automaticamente a implementação SQL em runtime — nenhum SQL é escrito manualmente.",u:"Cada repositório é uma interface Java simples. Os métodos seguem convenções de nomenclatura que o Spring converte em queries: findByUser → SELECT * FROM tabela WHERE user_id = ?"},
+{t:"model/",s:"Entidades JPA (tabelas BD)",c:"pasta",b:"b-pasta",m:"Contém 7 entidades JPA que o Hibernate mapeia para tabelas no PostgreSQL: User, Expense, Income, Goal, Category, CreditCard, InvoiceItem. Cada classe Java corresponde a uma tabela.",u:"Cada campo anotado com @Column vira uma coluna na BD. As anotações @ManyToOne criam chaves estrangeiras. O @PrePersist/PreUpdate gere as datas automaticamente."},
+{t:"model/enums/",s:"Enumerações de tipos",c:"pasta",b:"b-pasta",m:"Contém CardType (CREDIT, DEBIT) e CardBrand (VISA, MASTERCARD, OTHER). São enumerações Java guardadas como texto na BD com @Enumerated(EnumType.STRING).",u:"Usar enums em vez de strings livres impede que valores inválidos entrem na BD. O compilador rejeita qualquer valor que não esteja definido no enum."},
+{t:"dto/",s:"Objectos de entrada/saída",c:"pasta",b:"b-pasta",m:"Contém 9 DTOs que definem exactamente que dados entram ou saem da API. Separam o contrato público da API da estrutura interna das entidades JPA.",u:"O cliente envia categoryId (um número inteiro) no ExpenseRequest. O serviço resolve o objecto Category da BD. O DTO protege as entidades de serem expostas directamente."},
+{t:"exception/",s:"Excepções personalizadas",c:"pasta",b:"b-pasta",m:"Contém ResourceNotFoundException, anotada com @ResponseStatus(HttpStatus.NOT_FOUND). Quando lançada, o Spring devolve automaticamente HTTP 404.",u:"Os serviços lançam ResourceNotFoundException quando findByIdAndUser() devolve Optional vazio — o recurso não existe ou pertence a outro utilizador."},
+{t:"src/main/resources/",s:"Configurações e recursos",c:"pasta",b:"b-pasta",m:"Contém o application.properties (configuração real com variáveis de ambiente) e o application.properties.example (template sem dados sensíveis para versionar no Git).",u:"O Spring Boot carrega automaticamente o application.properties no arranque. O .example nunca tem credenciais reais — serve de documentação para novos colaboradores."},
+/* ===== CONFIG / SEGURANÇA ===== */
+{t:"SecurityConfig.java",s:"Configuração central de segurança",c:"config",b:"b-config",m:"Define todas as regras de segurança HTTP: CORS aberto a qualquer origem, CSRF desactivado, sessões STATELESS, rotas públicas (/api/auth/**, /api/health, /error) e todas as outras autenticadas.",u:"Sem este ficheiro, o Spring Security bloquearia todos os pedidos. É aqui que se define que o JwtAuthenticationFilter corre antes do filtro padrão de autenticação do Spring."},
+{t:"JwtUtil.java",s:"Geração e validação de JWT",c:"config",b:"b-config",m:"Classe utilitária com três métodos principais: generateToken(email) cria o token JWT com 24h de validade assinado com HMAC-SHA; getEmailFromToken(token) extrai o email; validateToken(token) verifica a assinatura e expiração.",u:"O expirationMs = 86400000 são exactamente 24 horas em milissegundos. O getSigningKey() converte o jwt.secret do application.properties na chave criptográfica HMAC."},
+{t:"JwtAuthenticationFilter.java",s:"Filtro de autenticação JWT",c:"config",b:"b-config",m:"Estende OncePerRequestFilter. Em cada pedido: extrai o token do header Authorization, valida com JwtUtil, carrega o User completo da BD e coloca-o no SecurityContextHolder. Ignora /api/auth/ via shouldNotFilter.",u:"É o porteiro de toda a API. Corre antes de qualquer controlador. O User colocado no SecurityContextHolder fica disponível para todos os serviços via getCurrentUser()."},
+/* ===== CONTROLADORES ===== */
+{t:"AuthController.java",s:"/api/auth — Login e Registo",c:"ctrl",b:"b-ctrl",m:"Expõe POST /api/auth/register e POST /api/auth/login. Tem um @ExceptionHandler(RuntimeException.class) que captura erros de autenticação e devolve HTTP 401 com {error: mensagem} em vez de 500 genérico.",u:"É a única rota pública (sem JWT). Rota pública declarada no SecurityConfig: .requestMatchers('/api/auth/**').permitAll()"},
+{t:"ExpenseController.java",s:"/api/expenses — CRUD de despesas",c:"ctrl",b:"b-ctrl",m:"5 endpoints: GET / (lista), GET /{id} (busca), POST / (cria, retorna 201), PUT /{id} (actualiza), DELETE /{id} (elimina, retorna 204). Tem @ExceptionHandler(Exception.class) que devolve 500 com a mensagem detalhada.",u:"Todos os métodos delegam no ExpenseService. O getById usa .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build()) para devolver 200 ou 404 sem if-else."},
+{t:"IncomeController.java",s:"/api/incomes — CRUD de receitas",c:"ctrl",b:"b-ctrl",m:"Estrutura idêntica ao ExpenseController: 5 endpoints GET, GET/{id}, POST (201), PUT/{id}, DELETE/{id} (204). Delega completamente no IncomeService.",u:"Expõe /api/incomes. O cliente (web ou Android) usa este endpoint para criar receitas. O serviço garante que só o utilizador autenticado vê os seus dados."},
+{t:"DashboardController.java",s:"/api/dashboard — Resumo financeiro",c:"ctrl",b:"b-ctrl",m:"Um único endpoint: GET /api/dashboard. Devolve um DashboardResponse completo com totais, últimas transações, despesas por categoria, máximos/mínimos e percentagem.",u:"Minimiza o número de pedidos do cliente: em vez de 4–5 pedidos separados, um único GET /api/dashboard devolve tudo o que o painel precisa de mostrar."},
+{t:"GoalController.java",s:"/api/goals — CRUD de metas",c:"ctrl",b:"b-ctrl",m:"CRUD completo: GET, GET/{id}, POST (201), PUT/{id}, DELETE/{id} (204). Delega no GoalService para todas as operações.",u:"Permite criar metas financeiras com nome, valor alvo, valor actual e prazo. O isolamento garante que cada utilizador só vê as suas próprias metas."},
+{t:"CategoryController.java",s:"/api/categories — Gestão de categorias",c:"ctrl",b:"b-ctrl",m:"GET /api/categories (lista), POST /api/categories ({name} no body), DELETE /api/categories/{id}. As categorias são por utilizador — cada um cria as suas.",u:"O body do POST aceita Map<String,String> com apenas o campo name. O CategoryService valida que a categoria pertence ao utilizador antes de apagar."},
+{t:"CreditCardController.java",s:"/api/credit-cards — Cartões",c:"ctrl",b:"b-ctrl",m:"CRUD completo: GET, GET/{id}, POST (201), PUT/{id}, DELETE/{id} (204). Aceita CreditCardRequest com todos os campos do cartão incluindo CardType e CardBrand.",u:"Permite gerir cartões CREDIT e DEBIT com marca (VISA/MASTERCARD/OTHER), últimos 4 dígitos (nunca o número completo), limite e fatura actual."},
+{t:"UserProfileController.java",s:"/api/users — Perfil do utilizador",c:"ctrl",b:"b-ctrl",m:"GET /api/users/profile, PUT /api/users/profile (actualização parcial), PUT /api/users/avatar (foto), PUT /api/users/password (alterar password), GET /api/users/test.",u:"A actualização de perfil aceita Map<String,String> — apenas os campos enviados são actualizados (actualização parcial / PATCH semântico)."},
+{t:"HealthController.java",s:"/api/health — Monitorização",c:"ctrl",b:"b-ctrl",m:"GET /api/health (rota pública). Devolve: status UP, apiVersion 1.0.0, uptimeMinutes via ManagementFactory, currentTime via Instant.now(), e abre uma ligação real à BD para verificar database UP/DOWN.",u:"Usado pelo Railway para verificar se o serviço está saudável após cada deploy. Qualquer ferramenta de uptime pode chamar este endpoint sem autenticação."},
+{t:"CashFlowController.java",s:"/api/cash-flow — Previsão financeira",c:"ctrl",b:"b-ctrl",m:"GET /api/cash-flow/forecast?days=30 (parâmetro opcional, padrão 30 dias). Devolve CashFlowForecastResponse com saldo actual, faturas a vencer, média de despesas e saldo previsto.",u:"Endpoint mais avançado do projeto — usa análise histórica dos últimos 3 meses de despesas para calcular a média diária e projectar o saldo futuro."},
+/* ===== SERVIÇOS ===== */
+{t:"AuthService.java",s:"Registo e Login",c:"svc",b:"b-svc",m:"register(): verifica existsByEmail → lança RuntimeException se duplicado → codifica password com BCrypt → guarda User. login(): busca por email → matches(rawPwd, hash) → gera JWT → devolve AuthResponse.",u:"O passwordEncoder.encode() nunca é reversível. O passwordEncoder.matches() compara re-hasheando — nunca descodifica o BCrypt armazenado."},
+{t:"ExpenseService.java",s:"CRUD de despesas + isolamento",c:"svc",b:"b-svc",m:"findAllByCurrentUser(): findByUser(getCurrentUser()). findByIdAndCurrentUser(): findByIdAndUser(id, user). create(): resolve categoria, constrói Expense, save(). update(): busca com isolamento, actualiza campos, save(). delete(): busca com isolamento, delete(). Usa Logger para debug/error.",u:"Único serviço com Logger explícito: log.debug() no início do create() e log.error() no catch. Indica que as despesas foram a funcionalidade com mais problemas durante o desenvolvimento."},
+{t:"IncomeService.java",s:"CRUD de receitas + isolamento",c:"svc",b:"b-svc",m:"Estrutura idêntica ao ExpenseService: findAllByCurrentUser, findByIdAndCurrentUser, create (com resolução de categoria), update, delete. Todos os métodos de escrita com @Transactional.",u:"Partilha a mesma lógica de isolamento do ExpenseService — findByIdAndUser garante que o utilizador só acede às suas próprias receitas."},
+{t:"DashboardService.java",s:"Cálculos do painel financeiro",c:"svc",b:"b-svc",m:"getDashboard(): carrega todas as receitas e despesas do utilizador, calcula com Java Streams: totalReceitas (reduce), totalDespesas (reduce), saldoAtual (subtract), despesasPorCategoria (groupingBy), ultimasTransacoes (concat+sort+limit(5)), maiorReceita, menorReceita, maiorDespesa, menorDespesa (max/min), percentagem (divide com HALF_UP).",u:"Toda a computação é em memória após duas queries à BD (findByUser para receitas e despesas). Não há queries adicionais por cálculo."},
+{t:"CashFlowService.java",s:"Previsão de fluxo de caixa",c:"svc",b:"b-svc",m:"forecast(dias): calcula saldo actual (receitas-despesas totais), faturas a vencer (incomes com date > hoje e ≤ hoje+dias), média diária de despesas dos últimos 3 meses (divide total pelo nº de dias), saldo previsto (saldo + faturas - projecção de despesas).",u:"Funcionalidade mais avançada do projeto — análise preditiva real. O parâmetro days=30 é configurável pelo cliente via query param."},
+{t:"CategoryService.java",s:"Gestão de categorias por utilizador",c:"svc",b:"b-svc",m:"getCategories(): findByUser(). findByIdAndUser(id, user): busca com isolamento, lança ResourceNotFoundException se não encontrado. createCategory(name): new Category(name, user) → save(). deleteCategory(id): verifica propriedade → delete().",u:"O findByIdAndUser é usado internamente pelos ExpenseService e IncomeService para resolver categorias — garante que um utilizador não pode usar categoria de outro."},
+{t:"CreditCardService.java",s:"Gestão de cartões",c:"svc",b:"b-svc",m:"getAllByCurrentUser() e getById() com @Transactional(readOnly=true). create(request): constrói CreditCard campo a campo com setters. update(id, request): busca com isolamento, actualiza campos. delete(id): busca com isolamento, delete().",u:"Os métodos de leitura usam readOnly=true — optimização que informa o Hibernate que não há escrita, evitando snapshots de transacção desnecessários."},
+{t:"GoalService.java",s:"Gestão de metas financeiras",c:"svc",b:"b-svc",m:"findAllByCurrentUser(), findByIdAndCurrentUser(id), create(GoalRequest), update(id, GoalRequest), delete(id). O create() constrói new Goal(name, targetAmount, currentAmount, deadline, user).",u:"As metas têm targetAmount sem nullable=false — foi removido durante o projeto para permitir metas sem valor alvo definido."},
+{t:"UserProfileService.java",s:"Perfil, avatar e password",c:"svc",b:"b-svc",m:"getProfile(): busca User actualizado da BD (não usa o do contexto). updateProfile(Map): actualização parcial com containsKey para firstName, lastName, bio. updateAvatar(url): guarda base64 ou URL. changePassword(old,new): matches(old,hash) → encode(new) → save().",u:"O getProfile() vai sempre buscar à BD em vez de usar o User do SecurityContextHolder — garante dados sempre frescos, evitando desactualização se o perfil foi editado noutro dispositivo."},
+/* ===== REPOSITÓRIOS ===== */
+{t:"UserRepository",s:"Acesso à tabela users",c:"repo",b:"b-repo",m:"findByEmail(String email) → SELECT * FROM users WHERE email = ?. existsByEmail(String email) → SELECT COUNT > 0. Estende JpaRepository<User, Long> que fornece save(), findById(), findAll(), delete().",u:"findByEmail é usado pelo JwtAuthenticationFilter (carrega o User do token) e pelo AuthService.login(). existsByEmail é usado no registo para verificar unicidade."},
+{t:"ExpenseRepository",s:"Acesso à tabela expenses",c:"repo",b:"b-repo",m:"findByUser(User) → WHERE user_id=?. findByIdAndUser(Long, User) → WHERE id=? AND user_id=?. findByUserAndDateBetween(User, LocalDate, LocalDate) → WHERE user_id=? AND date BETWEEN ? AND ?. findByUserAndCategory(User, Category).",u:"O findByIdAndUser é o método de segurança central — garante que o utilizador só acede às suas próprias despesas mesmo que adivinhe um ID."},
+{t:"IncomeRepository",s:"Acesso à tabela incomes",c:"repo",b:"b-repo",m:"Mesmos métodos que ExpenseRepository: findByUser, findByIdAndUser, findByUserAndDateBetween, findByUserAndCategory. O Spring gera o SQL a partir do nome do método.",u:"findByUserAndDateBetween é usado pelo CashFlowService para filtrar incomes futuros dentro do período de previsão."},
+{t:"GoalRepository",s:"Acesso à tabela goals",c:"repo",b:"b-repo",m:"findByUser(User) e findByIdAndUser(Long, User). O Spring gera automaticamente as queries correspondentes.",u:"Usado exclusivamente pelo GoalService para listar metas do utilizador e buscar uma meta específica com verificação de propriedade."},
+{t:"CategoryRepository",s:"Acesso à tabela categories",c:"repo",b:"b-repo",m:"findByUser(User) e findByIdAndUser(Long, User). O Spring gera as queries automáticas.",u:"Usado pelo CategoryService e, indirectamente, pelo ExpenseService e IncomeService quando resolvem a categoria a partir do categoryId enviado pelo cliente."},
+{t:"CreditCardRepository",s:"Acesso à tabela credit_cards",c:"repo",b:"b-repo",m:"findByUser(User), findByIdAndUser(Long, User), existsByIdAndUser(Long, User). O existsByIdAndUser é uma verificação de propriedade sem carregar o objecto completo.",u:"existsByIdAndUser evita carregar o CreditCard inteiro só para verificar se pertence ao utilizador — mais eficiente que findByIdAndUser nesses casos."},
+{t:"InvoiceItemRepository",s:"Acesso à tabela invoice_items",c:"repo",b:"b-repo",m:"Repositório para itens de fatura (InvoiceItem). Estende JpaRepository<InvoiceItem, Long>.",u:"Relacionado com a funcionalidade de faturas de cartão (Invoice/InvoiceItem). Acredito que esta funcionalidade pode estar em desenvolvimento — deves verificar se está completamente implementada."},
+/* ===== MODELOS ===== */
+{t:"User.java",s:"Tabela: users",c:"model",b:"b-model",m:"Campos: id (PK IDENTITY), email (unique, NOT NULL), password (@JsonProperty WRITE_ONLY), name, firstName, lastName, bio, avatarUrl (TEXT), active, createdAt (não actualizável), updatedAt. @PrePersist define active=true e ambas as datas. @PreUpdate actualiza updatedAt.",u:"O WRITE_ONLY na password é a protecção mais importante: a password (mesmo em BCrypt) nunca sai em nenhuma resposta JSON da API, mesmo que o Jackson serialize o User directamente."},
+{t:"Expense.java",s:"Tabela: expenses",c:"model",b:"b-model",m:"Campos: id, description (150 chars), amount (BigDecimal precision=10 scale=2), date (LocalDate), category (@ManyToOne LAZY nullable), user (@ManyToOne LAZY NOT NULL), createdAt, updatedAt. @PrePersist e @PreUpdate para datas. Construtor com (description, amount, date, category, user).",u:"O FetchType.LAZY em category e user significa que os objectos relacionados só são carregados da BD quando o código os acede — evita JOINs desnecessários."},
+{t:"Income.java",s:"Tabela: incomes",c:"model",b:"b-model",m:"Estrutura idêntica ao Expense.java: id, description, amount (BigDecimal), date (LocalDate), category (@ManyToOne), user (@ManyToOne NOT NULL), createdAt, updatedAt. @PrePersist/@PreUpdate para datas.",u:"A diferença em relação ao Expense: o @ManyToOne não especifica FetchType — usa o padrão EAGER para @ManyToOne, ou seja, carrega category e user automaticamente em cada query."},
+{t:"Goal.java",s:"Tabela: goals",c:"model",b:"b-model",m:"Campos: id, name (NOT NULL), targetAmount (BigDecimal, nullable — o nullable=false foi removido), currentAmount (BigDecimal, nullable), deadline (LocalDate, nullable), user (@ManyToOne LAZY NOT NULL), createdAt, updatedAt.",u:"O nullable=false foi removido do targetAmount durante o desenvolvimento para permitir metas sem valor alvo definido. Com ddl-auto=update, a coluna foi alterada automaticamente na BD."},
+{t:"CreditCard.java",s:"Tabela: credit_cards",c:"model",b:"b-model",m:"Campos: id, name (banco/produto), cardholderName, lastFourDigits (length=4 — nunca o número completo), expirationDate (LocalDate), type (@Enumerated STRING: CREDIT/DEBIT), limitAmount (BigDecimal, nullable), currentBill (BigDecimal, nullable), brand (@Enumerated STRING: VISA/MASTERCARD/OTHER), user (@ManyToOne LAZY NOT NULL).",u:"Guardar apenas os últimos 4 dígitos é uma boa prática de segurança — mesmo que a BD fosse comprometida, o número completo do cartão não estaria lá."},
+{t:"Category.java",s:"Tabela: categories",c:"model",b:"b-model",m:"Campos: id, name (NOT NULL), user (@ManyToOne LAZY NOT NULL com @JsonIgnore). Construtor com (name, user). O @JsonIgnore no campo user evita recursão infinita na serialização JSON: categoria → utilizador → lista de categorias → ....",u:"As categorias são pessoais — cada utilizador cria as suas. O @JsonIgnore é essencial: sem ele, o Jackson entraria em loop infinito ao tentar serializar a relação bidirecional."},
+{t:"InvoiceItem.java",s:"Tabela: invoice_items",c:"model",b:"b-model",m:"Entidade para itens de fatura de cartão de crédito. Relacionada com a funcionalidade de gestão de faturas do CreditCard.",u:"Acredito que esta funcionalidade está em desenvolvimento — deves verificar o estado actual do código para confirmar se está completamente implementada e exposta pela API."},
+/* ===== DTOs ===== */
+{t:"LoginRequest.java",s:"Corpo do POST /api/auth/login",c:"dto",b:"b-dto",m:"Campos: email (String), password (String). Representa exactamente o JSON que o cliente envia para fazer login.",u:"{\"email\":\"user@mail.com\",\"password\":\"123456\"}. O Jackson deserializa automaticamente o corpo JSON do pedido neste objecto via @RequestBody."},
+{t:"RegisterRequest.java",s:"Corpo do POST /api/auth/register",c:"dto",b:"b-dto",m:"Campos: name (String), email (String), password (String). O AuthService usa estes campos para criar o novo User na BD.",u:"{\"name\":\"David\",\"email\":\"david@mail.com\",\"password\":\"segura123\"}. A password é codificada com BCrypt antes de ser guardada — nunca em texto simples."},
+{t:"AuthResponse.java",s:"Resposta do login/registo",c:"dto",b:"b-dto",m:"Campos: token (String — o JWT gerado), email (String). Construtor AuthResponse(String token, String email). É o que o servidor devolve após autenticação bem-sucedida.",u:"O cliente guarda o token em localStorage (web) ou SharedPreferences (Android) e envia-o em cada pedido subsequente no cabeçalho Authorization: Bearer <token>."},
+{t:"ExpenseRequest.java",s:"Corpo do POST/PUT /api/expenses",c:"dto",b:"b-dto",m:"Campos: description (String), amount (BigDecimal), date (LocalDate), categoryId (Long, opcional). O cliente envia o ID da categoria; o serviço resolve o objecto Category da BD.",u:"O categoryId pode ser null — despesas sem categoria são válidas. O ExpenseService usa categoryService.findByIdAndUser() para verificar que a categoria pertence ao utilizador."},
+{t:"IncomeRequest.java",s:"Corpo do POST/PUT /api/incomes",c:"dto",b:"b-dto",m:"Campos idênticos ao ExpenseRequest: description, amount (BigDecimal), date (LocalDate), categoryId (Long, opcional).",u:"Usado pelo IncomeController em @RequestBody para deserializar o JSON do pedido. A estrutura é igual ao ExpenseRequest porque receitas e despesas têm a mesma forma de dados."},
+{t:"GoalRequest.java",s:"Corpo do POST/PUT /api/goals",c:"dto",b:"b-dto",m:"Campos: name (String), targetAmount (BigDecimal), currentAmount (BigDecimal), deadline (LocalDate). Todos opcionais excepto o name.",u:"O GoalService usa este DTO para construir ou actualizar um objecto Goal. O targetAmount e currentAmount podem ser null — a entidade Goal também os permite como nullable."},
+{t:"CreditCardRequest.java",s:"Corpo do POST/PUT /api/credit-cards",c:"dto",b:"b-dto",m:"Campos: name, cardholderName, lastFourDigits, expirationDate (LocalDate), type (CardType enum), limitAmount (BigDecimal, null se débito), currentBill (BigDecimal, null se débito), brand (CardBrand enum).",u:"O Jackson deserializa automaticamente \"CREDIT\" → CardType.CREDIT e \"VISA\" → CardBrand.VISA. Se o valor não existir no enum, o Jackson lança BadRequestException."},
+{t:"DashboardResponse.java",s:"Resposta do GET /api/dashboard",c:"dto",b:"b-dto",m:"Campos: totalReceitas, totalDespesas, saldoAtual (BigDecimal), despesasPorCategoria (Map<String,BigDecimal>), ultimasTransacoes (List<TransactionResumo>), maiorReceita, menorReceita, maiorDespesa, menorDespesa (TransactionResumo), percentagemDespesasSobreReceitas (BigDecimal). Classe interna TransactionResumo com id, descricao, valor, data, tipo, categoria.",u:"Agrega dados de múltiplas fontes num único pedido. O cliente faz um GET /api/dashboard e recebe tudo o que precisa para renderizar o painel — sem múltiplos pedidos paralelos."},
+{t:"CashFlowForecastResponse.java",s:"Resposta do GET /api/cash-flow/forecast",c:"dto",b:"b-dto",m:"Campos: saldoAtual, faturasAVencer, mediaDespesasMensal, saldoPrevisto (todos BigDecimal), dias (int). Construtor com todos os campos.",u:"O saldoPrevisto = saldoAtual + faturasAVencer - (mediaDiaria × dias). O mediaDespesasMensal = mediaDiaria × 30, para compatibilidade com visualização mensal no frontend."},
+/* ===== ANOTAÇÕES ===== */
+{t:"@Entity",s:"JPA — marca como entidade BD",c:"annot",b:"b-annot",m:"Diz ao Hibernate que esta classe Java corresponde a uma tabela na base de dados. Sem esta anotação, o Hibernate ignora a classe completamente.",u:"Presente em todas as 7 entidades: User, Expense, Income, Goal, Category, CreditCard, InvoiceItem."},
+{t:"@Table(name=...)",s:"JPA — define nome da tabela",c:"annot",b:"b-annot",m:"Especifica o nome exacto da tabela na BD. Sem esta anotação, o Hibernate usa o nome da classe, que pode colidir com palavras reservadas SQL (ex: USER é reservada no PostgreSQL).",u:"@Table(name=\"users\"), @Table(name=\"credit_cards\"), etc. Convenção: plural e snake_case, como no SQL padrão."},
+{t:"@Id + @GeneratedValue",s:"JPA — chave primária auto",c:"annot",b:"b-annot",m:"@Id marca o campo como chave primária. @GeneratedValue(strategy=IDENTITY) delega a geração do valor à BD — o PostgreSQL usa BIGSERIAL (auto-incremento).",u:"Em todas as entidades: @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;"},
+{t:"@Column",s:"JPA — mapeamento de coluna",c:"annot",b:"b-annot",m:"Define propriedades da coluna: nullable=false (NOT NULL), unique=true (UNIQUE), length=100, precision=10, scale=2, name=\"nome_coluna\", updatable=false (nunca alterado em UPDATE), columnDefinition=\"TEXT\".",u:"@Column(name=\"avatar_url\", columnDefinition=\"TEXT\") — define o tipo TEXT sem limite, necessário para strings base64 de imagens que podem ter dezenas de milhares de caracteres."},
+{t:"@ManyToOne",s:"JPA — relação N para 1",c:"annot",b:"b-annot",m:"Define que muitas instâncias desta entidade pertencem a uma instância da entidade referenciada. Cria uma coluna de chave estrangeira na tabela. Com FetchType.LAZY, só carrega o objecto relacionado quando acedido.",u:"Em Expense: @ManyToOne(fetch=LAZY) @JoinColumn(name='user_id', nullable=false) User user — a chave estrangeira user_id garante o isolamento de dados."},
+{t:"@PrePersist",s:"JPA — callback antes do INSERT",c:"annot",b:"b-annot",m:"Método executado automaticamente pelo Hibernate imediatamente antes do primeiro INSERT de uma entidade nova. Permite inicializar campos sem intervenção do programador.",u:"Em User: define createdAt, updatedAt = LocalDateTime.now() e active = true. Em Expense e Income: define createdAt e updatedAt. Corre em cada expenseRepository.save(new Expense())."},
+{t:"@PreUpdate",s:"JPA — callback antes do UPDATE",c:"annot",b:"b-annot",m:"Método executado automaticamente pelo Hibernate antes de cada UPDATE de uma entidade existente. Usado para manter updatedAt sempre actualizado.",u:"Em todas as entidades: @PreUpdate protected void onUpdate() { updatedAt = LocalDateTime.now(); } — corre automaticamente em cada save() de uma entidade já existente."},
+{t:"@Enumerated(EnumType.STRING)",s:"JPA — enum como texto na BD",c:"annot",b:"b-annot",m:"Guarda o valor do enum como texto na BD (ex: \"CREDIT\", \"VISA\") em vez de número ordinal (0, 1, 2). Protege contra bugs se a ordem dos valores do enum for alterada.",u:"Em CreditCard: @Enumerated(EnumType.STRING) CardType type e @Enumerated(EnumType.STRING) CardBrand brand. Se mudarmos a ordem no enum, os dados na BD continuam correctos porque estão guardados como texto."},
+{t:"@JsonIgnore",s:"Jackson — exclui campo do JSON",c:"annot",b:"b-annot",m:"Exclui completamente o campo da serialização e deserialização JSON. Diferente de WRITE_ONLY (que aceita entrada mas não serializa saída), @JsonIgnore exclui em ambas as direcções.",u:"Em Category: @JsonIgnore no campo User user — sem isto, o Jackson entraria em loop infinito: categoria → user → lista de categorias → categoria → ..."},
+{t:"@JsonProperty(WRITE_ONLY)",s:"Jackson — só entrada, nunca saída",c:"annot",b:"b-annot",m:"Aceita o campo quando o JSON vem do cliente (deserialização), mas nunca o inclui quando o JSON vai para o cliente (serialização). O campo existe em Java mas não aparece em nenhuma resposta.",u:"Em User: @JsonProperty(access=WRITE_ONLY) String password — a password (mesmo em BCrypt) nunca sai em nenhuma resposta da API, mesmo que o User seja devolvido directamente."},
+{t:"@JsonIgnoreProperties",s:"Jackson — ignora propriedades específicas",c:"annot",b:"b-annot",m:"Ao nível da classe, diz ao Jackson para ignorar propriedades com esses nomes durante a serialização. {\"hibernateLazyInitializer\",\"handler\"} evita erros ao serializar proxies Hibernate com FetchType.LAZY.",u:"Em User e CreditCard ao nível da classe. Em Expense nas relações ManyToOne: @JsonIgnoreProperties({\"hibernateLazyInitializer\",\"handler\"}) — sem isto, o Jackson lança StackOverflowError ao tentar serializar proxies LAZY."},
+{t:"@RestController",s:"Spring MVC — controlador REST",c:"annot",b:"b-annot",m:"Combinação de @Controller + @ResponseBody. Indica que os métodos devolvem dados JSON directamente no corpo da resposta HTTP, em vez de nomes de views HTML para renderizar.",u:"Presente em todos os 10 controladores do FinFlow. Sem @ResponseBody, o Spring tentaria encontrar uma view template com o nome devolvido — resultaria em erros 404 de template."},
+{t:"@RequestMapping",s:"Spring MVC — prefixo de URL",c:"annot",b:"b-annot",m:"Define o prefixo URL partilhado por todos os métodos da classe. Os métodos acrescentam um sufixo a este prefixo.",u:"@RequestMapping(\"/api/expenses\") na classe + @GetMapping na sem path = GET /api/expenses. @GetMapping(\"/{id}\") = GET /api/expenses/42."},
+{t:"@PathVariable",s:"Spring MVC — valor do URL",c:"annot",b:"b-annot",m:"Extrai um segmento variável do URL e injeta-o como parâmetro do método. O nome do parâmetro tem de coincidir com a variável na anotação de mapping.",u:"@GetMapping(\"/{id}\") public ResponseEntity<Expense> getById(@PathVariable Long id) — extrai o 42 de /api/expenses/42 e converte para Long automaticamente."},
+{t:"@RequestBody",s:"Spring MVC — corpo do pedido",c:"annot",b:"b-annot",m:"Diz ao Jackson para deserializar o corpo JSON do pedido HTTP para o objecto Java especificado. Se o JSON não corresponder ao tipo esperado, o Spring devolve 400 Bad Request.",u:"@PostMapping public Expense create(@Valid @RequestBody ExpenseRequest request) — o Jackson lê o corpo JSON e preenche os campos de ExpenseRequest automaticamente."},
+{t:"@ResponseStatus",s:"Spring MVC — código HTTP da resposta",c:"annot",b:"b-annot",m:"Define o código HTTP devolvido em caso de sucesso. Sem esta anotação, o padrão é 200 OK. Também usada em excepções para definir o código HTTP quando são lançadas.",u:"@ResponseStatus(HttpStatus.CREATED) no create() → 201. @ResponseStatus(HttpStatus.NO_CONTENT) no delete() → 204. @ResponseStatus(HttpStatus.NOT_FOUND) no ResourceNotFoundException → 404."},
+{t:"@ExceptionHandler",s:"Spring MVC — captura de excepções",c:"annot",b:"b-annot",m:"Método que captura excepções específicas lançadas pelos métodos do mesmo controlador. Permite devolver respostas HTTP formatadas em vez de erros 500 genéricos.",u:"No AuthController: @ExceptionHandler(RuntimeException.class) → devolve 401 com {error: mensagem}. No ExpenseController: @ExceptionHandler(Exception.class) → devolve 500 com mensagem detalhada."},
+{t:"@Service",s:"Spring — componente de serviço",c:"annot",b:"b-annot",m:"Marca a classe como bean de serviço para o Spring. O Spring cria automaticamente uma instância singleton e injeta-a onde for necessário via @Autowired.",u:"Presente em todos os 9 serviços: AuthService, ExpenseService, IncomeService, DashboardService, CashFlowService, CategoryService, GoalService, CreditCardService, UserProfileService."},
+{t:"@Transactional",s:"Spring — gestão de transacções",c:"annot",b:"b-annot",m:"Garante que o método corre dentro de uma transacção de BD. Se uma excepção for lançada, todas as alterações são revertidas (rollback). readOnly=true optimiza para leituras.",u:"Nos métodos de escrita do ExpenseService (create, update, delete) e no UserProfileService. CreditCardService usa @Transactional(readOnly=true) nos métodos de leitura."},
+/* ===== MÉTODOS CHAVE ===== */
+{t:"getCurrentUser()",s:"Método privado — todos os serviços",c:"metodo",b:"b-metodo",m:"return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(). Recupera o objecto User completo que o JwtAuthenticationFilter colocou no contexto de segurança da thread actual.",u:"Usado no início de quase todos os métodos dos serviços para identificar o utilizador autenticado. É thread-safe porque o SecurityContextHolder usa ThreadLocal — cada thread tem o seu próprio contexto."},
+{t:"generateToken(email)",s:"JwtUtil — gera o JWT",c:"metodo",b:"b-metodo",m:"Jwts.builder().setSubject(email).setIssuedAt(now).setExpiration(now+86400000).signWith(getSigningKey()).compact(). Cria o token JWT com 24h de validade, assinado com HMAC-SHA a partir do jwt.secret.",u:"Chamado pelo AuthService.login() após verificar as credenciais. O token resultante é devolvido ao cliente no AuthResponse e deve ser guardado localmente."},
+{t:"validateToken(token)",s:"JwtUtil — valida o JWT",c:"metodo",b:"b-metodo",m:"Tenta fazer parse do token com Jwts.parserBuilder(). Se a assinatura for inválida, o token expirado, ou malformado, a JJWT lança JwtException — apanhada no catch e devolve false.",u:"Chamado pelo JwtAuthenticationFilter em cada pedido autenticado. Se devolver false, o filtro não autentica o pedido e o Spring Security devolve 403."},
+{t:"shouldNotFilter(request)",s:"JwtAuthenticationFilter — exclusão de rotas",c:"metodo",b:"b-metodo",m:"Verifica se o URI começa por /api/auth/ ou /auth/. Se sim, devolve true — o filtro JWT não corre para este pedido.",u:"Sem este método, seria impossível fazer login (o login exigiria um token para funcionar, entrando em contradição). É a excepção que permite que as rotas públicas funcionem."},
+{t:"doFilterInternal()",s:"JwtAuthenticationFilter — lógica principal",c:"metodo",b:"b-metodo",m:"1) Lê header Authorization. 2) Extrai token após 'Bearer '. 3) validateToken(). 4) getEmailFromToken(). 5) findByEmail() → User completo. 6) Cria UsernamePasswordAuthenticationToken. 7) setAuthentication() no SecurityContextHolder. 8) filterChain.doFilter() — sempre chamado.",u:"O passo 8 é crítico: mesmo que o token seja inválido, o doFilter() é sempre chamado. Quem bloqueia pedidos não autenticados é o SecurityConfig, não este filtro."},
+{t:"getDashboard()",s:"DashboardService — cálculos do painel",c:"metodo",b:"b-metodo",m:"Duas queries à BD (findByUser para incomes e expenses). Depois Stream API: reduce para totais, subtract para saldo, groupingBy para categorias, concat+sorted+limit para últimas 5, max/min para extremos, divide com HALF_UP para percentagem.",u:"Todo o processamento é em memória após as duas queries. A percentagem usa RoundingMode.HALF_UP porque a divisão BigDecimal pode ser infinita (ex: 1/3) e exige modo de arredondamento explícito."},
+{t:"forecast(dias)",s:"CashFlowService — previsão financeira",c:"metodo",b:"b-metodo",m:"Calcula: saldoAtual (totais globais receitas-despesas), faturasAVencer (incomes com date > hoje && ≤ hoje+dias), mediaDiaria (despesas 3 meses / dias do período), projecaoDespesas (mediaDiaria × dias), saldoPrevisto (saldo + faturas - projecção).",u:"O parâmetro dias vem do query param ?days=30 com defaultValue=30 no controller. Math.max(1, diasNoPeriodo) evita divisão por zero se não houver despesas históricas."},
+{t:"updateProfile(updates)",s:"UserProfileService — actualização parcial",c:"metodo",b:"b-metodo",m:"Aceita Map<String,String>. Usa containsKey() para verificar campo a campo: só actualiza firstName, lastName e bio se estiverem no Map. Campos não enviados não são alterados.",u:"É uma actualização parcial (semântica de PATCH): o cliente envia apenas os campos que quer mudar. Se enviar só {\"bio\":\"nova bio\"}, só o bio é alterado — firstName e lastName mantêm-se iguais."},
+{t:"findByIdAndUser()",s:"Repositórios — método de segurança",c:"metodo",b:"b-metodo",m:"Gerado automaticamente pelo Spring Data JPA: SELECT * FROM tabela WHERE id = ? AND user_id = ?. Se o registo existir mas pertencer a outro utilizador, devolve Optional.empty().",u:"O método de segurança mais importante do projeto. Mesmo que um utilizador adivinhe um id válido de outro utilizador, o AND user_id=? garante que não obtém acesso. Lançar ResourceNotFoundException neste caso devolve 404."},
+/* ===== FRONTEND WEB ===== */
+{t:"api.js",s:"Módulo central de comunicação HTTP",c:"front",b:"b-front",m:"Função apiRequest(endpoint, method, body): constrói URL com BASE_URL, lê token de localStorage (tenta 'token' e 'finflow_token'), adiciona Authorization: Bearer se rota não for /api/auth/, faz fetch(), trata 401 (limpa localStorage + redireciona), 403 GET (devolve []), 204 (devolve {}), erros HTTP. Tem inicializarAvatarGlobal() automático no DOMContentLoaded.",u:"Incluído em todas as páginas protegidas. Centraliza todo o comportamento de comunicação — nenhuma página precisa de gerir o token ou os erros HTTP individualmente."},
+{t:"app.js",s:"Lógica de login e registo",c:"front",b:"b-front",m:"Lê finflow_landing_email e finflow_landing_action do localStorage para pré-preencher o formulário. Alternância visual entre login e registo por classes CSS. Submissão do login: apiRequest → guarda token nas duas chaves → redireciona para dashboard. Registo: apiRequest → alerta → muda para login.",u:"O token é guardado em duas chaves (token e finflow_token) porque partes diferentes do frontend foram desenvolvidas com chaves diferentes — compatibilidade retroativa."},
+{t:"dashboard.js",s:"Painel principal — gráfico e totais",c:"front",b:"b-front",m:"DOMContentLoaded: verifica token (redireciona se ausente), chama inicializarAvatar(), faz GET /api/dashboard, chama renderizarCartoes() e renderizarUltimosLancamentos(). Chart.js para gráfico de linha. Botão de exportar PDF: recolhe dados visíveis, canvas.toDataURL() para o gráfico, html2pdf.js para gerar o ficheiro.",u:"Os dados dos meses anteriores do gráfico são simulados — o backend devolve apenas totais globais, não agrupados por mês. Apenas o mês actual usa valores reais da API."},
+{t:"despesas.js",s:"Lista unificada de movimentações",c:"front",b:"b-front",m:"Promise.all([GET /api/incomes, GET /api/expenses]) em paralelo — 2 pedidos simultâneos, tempo total = o mais lento. Adiciona tipoDoGrid ('entrada'/'saida'), concatena e ordena por data. Modal de criação: categoryId de GET /api/categories. Fallback de categorias hardcoded se GET falhar.",u:"Promise.all() é a optimização chave: em vez de esperar 300ms+300ms=600ms sequencialmente, os dois pedidos correm em paralelo e terminam em ~300ms."},
+{t:"metas.js",s:"Metas financeiras",c:"front",b:"b-front",m:"GET /api/goals → renderiza tabela com nome, valor alvo em euros, prazo ('Sem prazo' se null), percentagem de progresso (currentAmount/targetAmount*100). Formulário POST /api/goals.",u:"A percentagem de progresso é calculada no frontend a partir dos campos do GoalResponse — o backend devolve currentAmount e targetAmount, e o JS calcula (current/target)*100."},
+{t:"cartoes.js",s:"Cartões de crédito e débito",c:"front",b:"b-front",m:"GET /api/credit-cards → renderiza cards visuais. Auto-diagnóstico: se retornar 403 ou lista vazia, tenta /api/cards como rota alternativa. Formulário adaptativo: se type=DEBIT, oculta campos de limite e fatura. POST /api/credit-cards. DELETE com confirmação.",u:"O auto-diagnóstico de rota alternativa (/api/cards) foi adicionado durante o desenvolvimento para lidar com mudanças de endpoint sem quebrar a página."},
+{t:"perfil.html",s:"Perfil do utilizador + avatar",c:"front",b:"b-front",m:"Script inline: GET /api/users/profile → preenche campos. Evento change no input file: FileReader.readAsDataURL(file) → converte imagem para base64 → actualiza imagem na página imediatamente → PUT /api/users/avatar com {avatarUrl: base64String}.",u:"O FileReader.readAsDataURL() converte o ficheiro de imagem para uma string data:image/jpeg;base64,... directamente no browser, sem upload de ficheiro. A string base64 é depois guardada no campo TEXT do PostgreSQL."},
+{t:"index.html + landing.css",s:"Landing Page pública",c:"front",b:"b-front",m:"Hero section com formulário de captura de email. Submit: guarda email em localStorage (finflow_landing_email) e action em finflow_landing_action='register' → redireciona para login.html. O app.js lê estes valores e pré-preenche o formulário de registo.",u:"A comunicação entre a landing page e o formulário de registo é feita via localStorage — sem estado partilhado em memória, sem cookies, sem query params."},
+{t:"style.css",s:"Estilos globais partilhados",c:"front",b:"b-front",m:"Ficheiro CSS incluído em todas as páginas protegidas. Define variáveis CSS globais, estilos da sidebar, tipografia, cores do tema, e componentes partilhados (botões, modais, tabelas).",u:"Ao centralizar os estilos comuns, garante consistência visual entre todas as páginas sem duplicação de CSS. Cada página tem também o seu CSS específico (dashboard.css, despesas.css, etc.)."},
+/* ===== ANDROID ===== */
+{t:"RetrofitClient.kt",s:"Cliente HTTP singleton — Android",c:"android",b:"b-android",m:"object Kotlin (singleton). getApiService(context): cria TokenManager, configura HttpLoggingInterceptor (BODY — regista todos os pedidos no Logcat), OkHttpClient com dois interceptors (logger + autenticação JWT), Retrofit com GsonConverterFactory e BASE_URL do Railway.",u:"O interceptor de autenticação lê tokenManager.getToken() e adiciona Authorization: Bearer <token> automaticamente a todos os pedidos — equivalente ao que o api.js faz no browser."},
+{t:"ApiService.kt",s:"Interface de endpoints — Android",c:"android",b:"b-android",m:"Interface Kotlin com anotações Retrofit: @POST login/register, @GET/@POST incomes/expenses/categories/goals/dashboard/credit-cards, @DELETE credit-cards/{id}, @DELETE users/me. Todos os métodos são suspend fun (corrotinas).",u:"O Retrofit gera a implementação desta interface em runtime. suspend fun permite chamar os métodos de forma assíncrona sem callbacks — o código parece síncrono mas não bloqueia a UI thread."},
+{t:"TokenManager.kt",s:"SharedPreferences — persistência do token",c:"android",b:"b-android",m:"Guarda e lê o JWT das SharedPreferences: saveToken(token), getToken(), saveUser(name, email), getUserName(), getUserEmail(), saveProfilePicture(uri), getProfilePicture(), clear(). As chaves são constantes no companion object.",u:"SharedPreferences é o equivalente Android ao localStorage do browser. O clear() apaga tudo no logout — token, nome, email, foto. O getToken() é chamado pelo interceptor OkHttp em cada pedido."},
+{t:"LoginActivity.kt",s:"Ecrã de login — Jetpack Compose",c:"android",b:"b-android",m:"onCreate: auto-login se tokenManager.getToken() != null (navega directamente para MainActivity). Caso contrário, mostra LoginScreenContent com Compose. Após login: saveToken(), saveUser(), startActivity(MainActivity), finish() — o finish() impede voltar ao login com 'back'.",u:"O finish() após navegar para MainActivity é crítico — remove a LoginActivity da pilha de navegação (back stack). Sem ele, o botão 'back' na MainActivity voltaria ao ecrã de login."},
+{t:"MainActivity.kt",s:"Ecrã principal — tabs e dashboard",c:"android",b:"b-android",m:"onResume(): resumeEpoch.value = System.currentTimeMillis() — dispara recarregamento de dados. LaunchedEffect(resumeEpoch): chama fetchAllData(). fetchAllData(): getIncomes() + getExpenses() em paralelo, calcula balance=totalIncomes-totalExpenses, combina listas, limit(6) para actividades recentes, getGoals(), getCreditCards(). NavigationBar com 4 tabs. FAB apenas em Metas e Despesas.",u:"O mecanismo resumeEpoch é o equivalente Android ao onResume que força refresh — sem ele, os dados ficariam desactualizados ao regressar de AddExpenseActivity."},
+{t:"AddExpenseActivity.kt",s:"Formulário de nova transacção",c:"android",b:"b-android",m:"Formulário Compose para criar receita ou despesa. Carrega categorias de GET /api/categories. Selector de tipo (Receita/Despesa). Após guardar: createIncome() ou createExpense() conforme o tipo → finish() → MainActivity detecta o regresso via onResume e recarrega.",u:"O finish() após guardar volta à actividade anterior (MainActivity ou ExpenseListActivity). O onResume() dessas actividades detecta o regresso e recarrega os dados automaticamente via resumeEpoch."},
+{t:"ExpenseListActivity.kt",s:"Lista completa de movimentações",c:"android",b:"b-android",m:"LazyColumn com todas as despesas. Filtros horizontais por categoria (LazyRow com chips). Botão de eliminar por item: delete() → recarga da lista. Mesmo mecanismo resumeEpoch para refresh automático.",u:"A filtragem por categoria é feita localmente (no Kotlin) a partir da lista já carregada — não faz nova query ao servidor para cada categoria seleccionada."},
+{t:"Expense.kt (data class)",s:"Modelo de receitas e despesas — Android",c:"android",b:"b-android",m:"data class com: id, description, amount (Double), date (String), categoryId, categoryName, category (Category?), @Transient isIncome: Boolean = false. Propriedade calculada displayCategoryName normaliza nomes (salário/salario/vencimento → mesmo display).",u:"@Transient diz ao Gson para ignorar isIncome na serialização — não é enviado ao servidor. É apenas local para distinguir visualmente receitas de despesas na UI sem duas listas separadas."},
+{t:"Theme.kt + Color.kt",s:"Tema visual AMOLED — Android",c:"android",b:"b-android",m:"darkTheme = true sempre (não segue preferência do sistema). Cores: DarkBackground=#121212 (preto AMOLED), DarkSurface=#1E1E1E, SpringGreen=#00E676 (verde néon principal), AccentTeal=#45FEC9, ErrorColor=#FFADAB. MaterialTheme com DarkColorScheme.",u:"O modo escuro forçado é uma decisão de design — a identidade visual do FinFlow é verde néon sobre fundo preto AMOLED. Em ecrãs OLED, pixels pretos não consomem energia, melhorando a autonomia da bateria."},
+];
+
+let ac='all', sv='';
+function rd(){
+  sv=document.getElementById('dsearch').value.toLowerCase();
+  const g=document.getElementById('dgrid');
+  const ct=document.getElementById('dcount');
+  const f=T.filter(x=>{
+    const catOk=ac==='all'||x.c===ac;
+    const textOk=!sv||x.t.toLowerCase().includes(sv)||x.m.toLowerCase().includes(sv)||(x.s&&x.s.toLowerCase().includes(sv));
+    return catOk&&textOk;
+  });
+  ct.textContent=f.length+' entradas'+(sv?' para "'+sv+'"':'');
+  g.innerHTML=f.map(x=>`<div class="dc">
+    <div class="dh"><span class="dt">${x.t}</span><span class="db ${x.b}">${x.b.replace('b-','').replace('front','Frontend').replace('android','Android').replace('ctrl','Controller').replace('svc','Serviço').replace('repo','Repositório').replace('model','Modelo').replace('dto','DTO').replace('annot','Anotação').replace('metodo','Método').replace('pasta','Pasta').replace('config','Config')}</span></div>
+    ${x.s?`<div class="dsub">${x.s}</div>`:''}
+    <div class="dmean">${x.m}</div>
+    <div class="duse"><strong style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">No FinFlow: </strong>${x.u}</div>
+  </div>`).join('');
+}
+function sf(cat,btn){
+  ac=cat;
+  document.querySelectorAll('#fb button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  rd();
+}
+rd();
+</script>
+</body>
+</html>
