@@ -1,321 +1,328 @@
-<h2 class="sr-only">Dicionário interativo de termos técnicos do projeto FinFlow — pesquise e filtre por categoria</h2>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dicionário Técnico – FinFlow</title>
+  <style>
+    /* ============================================================ */
+    /* ===== RESET E BASE ===== */
+    /* ============================================================ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      padding: 1rem;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4px;
+    }
 
-<style>
-/* ============================================================ */
-/* ===== ESTILOS IGUAIS AOS DA ESTRUTURA ===== */
-/* ============================================================ */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f7fa;
-  color: #1e293b;
-  padding: 1rem;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 4px;
-}
+    /* ===== CABEÇALHO ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0b2b44;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+    .header h1 span {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #64748b;
+      margin-left: 6px;
+    }
+    .btn-voltar {
+      background: #e2e8f0;
+      color: #1e293b;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn-voltar:hover {
+      background: #cbd5e1;
+    }
+    .btn-voltar svg {
+      width: 18px;
+      height: 18px;
+    }
 
-/* ===== CABEÇALHO ===== */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  background: white;
-  padding: 1rem 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.header h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0b2b44;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 0;
-}
-.header h1 span {
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: #64748b;
-  margin-left: 6px;
-}
-.btn-voltar {
-  background: #e2e8f0;
-  color: #1e293b;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.15s;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.btn-voltar:hover {
-  background: #cbd5e1;
-}
-.btn-voltar svg {
-  width: 18px;
-  height: 18px;
-}
+    /* ===== DICIONÁRIO ===== */
+    .dict-wrap {
+      padding: 0;
+      margin: 0;
+    }
 
-/* ===== DICIONÁRIO (estrutura adaptada) ===== */
-.dict-wrap {
-  padding: 0;
-  margin: 0;
-}
+    .dict-search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .dict-search-row input {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 14px;
+      font-size: 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: white;
+      color: #1e293b;
+      width: 100%;
+    }
+    .dict-search-row input:focus {
+      outline: 2px solid #3b82f6;
+      border-color: transparent;
+    }
 
-.dict-search-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-.dict-search-row input {
-  flex: 1;
-  min-width: 180px;
-  padding: 10px 14px;
-  font-size: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background: white;
-  color: #1e293b;
-  width: 100%;
-}
-.dict-search-row input:focus {
-  outline: 2px solid #3b82f6;
-  border-color: transparent;
-}
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      justify-content: center;
+    }
+    .filter-btn {
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #d1d5db;
+      background: white;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .filter-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    .filter-btn:hover:not(.active) {
+      background: #f1f5f9;
+    }
 
-.filter-bar {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 1.25rem;
-  justify-content: center;
-}
-.filter-btn {
-  font-size: 12px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid #d1d5db;
-  background: white;
-  color: #4b5563;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.filter-btn.active {
-  background: #3b82f6;
-  color: white;
-  border-color: #3b82f6;
-}
-.filter-btn:hover:not(.active) {
-  background: #f1f5f9;
-}
+    .dict-count {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
 
-.dict-count {
-  font-size: 13px;
-  color: #64748b;
-  margin-bottom: 1rem;
-  text-align: center;
-}
+    /* ===== GRELHA DE CARTÕES ===== */
+    .dict-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
 
-/* ===== GRELHA DE CARTÕES (igual à estrutura) ===== */
-.dict-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 12px;
-}
+    .dict-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      transition: box-shadow 0.15s;
+      max-width: 100%;
+    }
+    .dict-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
 
-.dict-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  word-break: break-word;
-  transition: box-shadow 0.15s;
-  max-width: 100%;
-  overflow-wrap: break-word;
-}
-.dict-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
+    .dict-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .dict-term {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0b2b44;
+      font-family: 'Courier New', monospace;
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+    .dict-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+      font-weight: 500;
+    }
 
-.dict-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.dict-term {
-  font-size: 15px;
-  font-weight: 600;
-  color: #0b2b44;
-  font-family: 'Courier New', monospace;
-  flex: 1;
-  min-width: 0;
-  word-break: break-word;
-}
-.dict-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 2px;
-  font-weight: 500;
-}
+    /* ===== CORES DOS BADGES ===== */
+    .badge-protocol  { background: #e8f0fe; color: #1a56db; }
+    .badge-security  { background: #fef3c7; color: #92400e; }
+    .badge-java      { background: #fdf4ff; color: #7e22ce; }
+    .badge-db        { background: #ecfdf5; color: #065f46; }
+    .badge-frontend  { background: #fdf2f8; color: #be185d; }
+    .badge-infra     { background: #f8fafc; color: #475569; border: 0.5px solid #cbd5e1; }
+    .badge-android   { background: #e8f5e9; color: #1b5e20; }
 
-/* ===== CORES DOS BADGES (adaptadas do dicionário) ===== */
-.badge-protocol  { background: #e8f0fe; color: #1a56db; }
-.badge-security  { background: #fef3c7; color: #92400e; }
-.badge-java      { background: #fdf4ff; color: #7e22ce; }
-.badge-db        { background: #ecfdf5; color: #065f46; }
-.badge-frontend  { background: #fdf2f8; color: #be185d; }
-.badge-infra     { background: #f8fafc; color: #475569; border: 0.5px solid #cbd5e1; }
-.badge-android   { background: #e8f5e9; color: #1b5e20; }
+    .dict-full {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .dict-meaning {
+      font-size: 13px;
+      color: #1e293b;
+      line-height: 1.55;
+    }
+    .dict-use {
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.5;
+      border-left: 2px solid #cbd5e1;
+      padding-left: 8px;
+      margin-top: 2px;
+    }
+    .dict-use strong {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
 
-.dict-full {
-  font-size: 12px;
-  color: #64748b;
-}
-.dict-meaning {
-  font-size: 13px;
-  color: #1e293b;
-  line-height: 1.55;
-}
-.dict-use {
-  font-size: 12px;
-  color: #475569;
-  line-height: 1.5;
-  border-left: 2px solid #cbd5e1;
-  padding-left: 8px;
-  margin-top: 2px;
-}
-.dict-use strong {
-  font-size: 10px;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
+    /* ================================================================ */
+    /* ===== RESPONSIVO – IDÊNTICO À ESTRUTURA ===== */
+    /* ================================================================ */
 
-/* ================================================================ */
-/* ===== RESPONSIVO – MESMO DA ESTRUTURA ===== */
-/* ================================================================ */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        padding: 1rem;
+      }
+      .header h1 {
+        font-size: 1.3rem;
+        justify-content: center;
+      }
+      .btn-voltar {
+        justify-content: center;
+        padding: 10px;
+      }
 
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    padding: 1rem;
-  }
-  .header h1 {
-    font-size: 1.3rem;
-    justify-content: center;
-  }
-  .btn-voltar {
-    justify-content: center;
-    padding: 10px;
-  }
+      .dict-search-row input {
+        font-size: 16px;
+        padding: 12px 14px;
+      }
 
-  .dict-search-row input {
-    font-size: 16px;
-    padding: 12px 14px;
-  }
+      .filter-bar {
+        gap: 4px;
+        justify-content: center;
+      }
+      .filter-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+        flex: 1 0 auto;
+        min-width: 60px;
+        text-align: center;
+      }
 
-  .filter-bar {
-    gap: 4px;
-    justify-content: center;
-  }
-  .filter-btn {
-    font-size: 11px;
-    padding: 6px 10px;
-    flex: 1 0 auto;
-    min-width: 60px;
-    text-align: center;
-  }
+      /* ★★★ FORÇA UMA COLUNA (CARTÕES EMPILHADOS) ★★★ */
+      .dict-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px;
+      }
 
-  /* ★★★ FORÇA UMA COLUNA (CARTÕES EMPILHADOS) ★★★ */
-  .dict-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px;
-  }
+      .dict-card {
+        padding: 0.9rem;
+        max-width: 100%;
+      }
+      .dict-term {
+        font-size: 14px;
+      }
+      .dict-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+      }
+      .dict-meaning {
+        font-size: 12.5px;
+      }
+      .dict-use {
+        font-size: 11.5px;
+        padding-left: 6px;
+      }
+      .dict-count {
+        font-size: 12px;
+      }
+    }
 
-  .dict-card {
-    padding: 0.9rem;
-  }
-  .dict-term {
-    font-size: 14px;
-  }
-  .dict-badge {
-    font-size: 9px;
-    padding: 2px 6px;
-  }
-  .dict-meaning {
-    font-size: 12.5px;
-  }
-  .dict-use {
-    font-size: 11.5px;
-    padding-left: 6px;
-  }
-  .dict-count {
-    font-size: 12px;
-  }
-}
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.1rem;
+      }
+      .header h1 span {
+        display: block;
+        font-size: 0.7rem;
+        margin-left: 0;
+      }
 
-@media (max-width: 480px) {
-  .header h1 {
-    font-size: 1.1rem;
-  }
-  .header h1 span {
-    display: block;
-    font-size: 0.7rem;
-    margin-left: 0;
-  }
+      .filter-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+        min-width: 50px;
+      }
 
-  .filter-btn {
-    font-size: 10px;
-    padding: 4px 8px;
-    min-width: 50px;
-  }
-
-  .dict-card {
-    padding: 0.7rem;
-  }
-  .dict-term {
-    font-size: 13px;
-  }
-  .dict-badge {
-    font-size: 8px;
-    padding: 1px 5px;
-  }
-  .dict-meaning {
-    font-size: 12px;
-  }
-  .dict-use {
-    font-size: 11px;
-  }
-}
-</style>
+      .dict-card {
+        padding: 0.7rem;
+      }
+      .dict-term {
+        font-size: 13px;
+      }
+      .dict-badge {
+        font-size: 8px;
+        padding: 1px 5px;
+      }
+      .dict-meaning {
+        font-size: 12px;
+      }
+      .dict-use {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
 
 <div class="container">
   <!-- ===== CABEÇALHO ===== -->
@@ -354,7 +361,7 @@ body {
 
 <script>
 // ================================================================
-//  TERMOS – 98+ termos do FinFlow
+//  TERMOS – 98+ termos completos do FinFlow
 // ================================================================
 const terms = [
   // ---- PROTOCOLO / WEB ----
@@ -553,3 +560,5 @@ function setFilter(cat, btn) {
 
 renderDict();
 </script>
+</body>
+</html>
