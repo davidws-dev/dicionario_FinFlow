@@ -1,278 +1,409 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Técnico – FinFlow</title>
-  <style>
-    /* ===== BASE ===== */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f5f7fa;
-      color: #1e293b;
-      padding: 1rem;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-    .quiz-wrap {
-      max-width: 820px;
-      width: 100%;
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 1.8rem 1.5rem;
-      margin: 0 auto;
-    }
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.3rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .subtitle {
-      color: #64748b;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-      border-left: 3px solid #3b82f6;
-      padding-left: 12px;
-    }
-    /* ===== FILTROS ===== */
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 1.5rem;
-    }
-    .filter-btn {
-      font-size: 0.7rem;
-      padding: 5px 12px;
-      border-radius: 20px;
-      border: 1px solid #d1d5db;
-      background: white;
-      color: #4b5563;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .filter-btn.active {
-      background: #3b82f6;
-      color: white;
-      border-color: #3b82f6;
-    }
-    .filter-btn:hover:not(.active) {
-      background: #f1f5f9;
-    }
+<h2 class="sr-only">Quiz interativo sobre o projeto FinFlow — teste os seus conhecimentos técnicos</h2>
 
-    /* ===== PERGUNTA ===== */
-    .question-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-      font-size: 0.9rem;
-      color: #64748b;
-    }
-    .question-text {
-      font-size: 1.2rem;
-      font-weight: 500;
-      margin-bottom: 1.2rem;
-      line-height: 1.5;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 1.5rem;
-    }
-    .option {
-      background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .option:hover:not(.disabled) {
-      background: #f1f5f9;
-      border-color: #94a3b8;
-    }
-    .option .letter {
-      font-weight: 700;
-      color: #94a3b8;
-      min-width: 24px;
-    }
-    .option.correct {
-      background: #dcfce7;
-      border-color: #22c55e;
-    }
-    .option.correct .letter { color: #16a34a; }
-    .option.wrong {
-      background: #fee2e2;
-      border-color: #ef4444;
-    }
-    .option.wrong .letter { color: #dc2626; }
-    .option.disabled { cursor: default; opacity: 0.8; }
-    .option.reveal-correct {
-      background: #dcfce7;
-      border-color: #22c55e;
-    }
+<style>
+/* ============================================================ */
+/* ===== ESTILOS IGUAIS AOS DA ESTRUTURA E DICIONÁRIO ===== */
+/* ============================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  color: #1e293b;
+  padding: 1rem;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 4px;
+}
 
-    /* ===== FEEDBACK ===== */
-    .feedback {
-      background: #f1f5f9;
-      border-radius: 12px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 1.5rem;
-      display: none;
-      border-left: 4px solid #3b82f6;
-    }
-    .feedback.show { display: block; }
-    .feedback .explanation {
-      font-size: 0.95rem;
-      margin-bottom: 6px;
-    }
-    .feedback .tip {
-      font-size: 0.85rem;
-      color: #475569;
-      background: #e2e8f0;
-      padding: 6px 12px;
-      border-radius: 8px;
-      display: inline-block;
-    }
+/* ===== CABEÇALHO ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0b2b44;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+.header h1 span {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #64748b;
+  margin-left: 6px;
+}
+.btn-voltar {
+  background: #e2e8f0;
+  color: #1e293b;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.btn-voltar:hover {
+  background: #cbd5e1;
+}
+.btn-voltar svg {
+  width: 18px;
+  height: 18px;
+}
 
-    /* ===== BOTÕES ===== */
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 0.5rem;
-    }
-    .btn {
-      background: #3b82f6;
-      color: white;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .btn:hover:not(:disabled) { background: #2563eb; }
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .btn-secondary {
-      background: #e2e8f0;
-      color: #1e293b;
-    }
-    .btn-secondary:hover:not(:disabled) { background: #cbd5e1; }
+/* ===== BASE DO QUIZ ===== */
+.quiz-wrap {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  padding: 1.8rem 1.5rem;
+}
 
-    /* ===== RESULTADO ===== */
-    .result {
-      text-align: center;
-      padding: 1.5rem 0;
-    }
-    .result .score {
-      font-size: 3rem;
-      font-weight: 800;
-      color: #3b82f6;
-    }
-    .result .detail {
-      margin-top: 0.5rem;
-      color: #64748b;
-    }
-    .result .per-topic {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin: 1rem 0;
-    }
-    .result .per-topic span {
-      background: #f1f5f9;
-      padding: 4px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-    }
+.subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #3b82f6;
+  padding-left: 12px;
+}
 
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 600px) {
-      .quiz-wrap { padding: 1.2rem 1rem; }
-      h1 { font-size: 1.3rem; }
-      .question-text { font-size: 1.05rem; }
-      .option { padding: 10px 14px; font-size: 0.9rem; }
-      .filter-btn { font-size: 0.65rem; padding: 4px 10px; }
-      .btn { padding: 8px 18px; font-size: 0.85rem; }
-    }
-    @media (max-width: 400px) {
-      .actions { flex-direction: column; align-items: stretch; }
-      .btn { width: 100%; }
-    }
-  </style>
-</head>
-<body>
+/* ===== FILTROS ===== */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+.filter-btn {
+  font-size: 0.7rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+.filter-btn:hover:not(.active) {
+  background: #f1f5f9;
+}
 
-<div class="quiz-wrap" id="app">
-  <h1>🧠 Quiz FinFlow</h1>
-  <div class="subtitle">+100 perguntas para testar os teus conhecimentos sobre o projeto</div>
+/* ===== PERGUNTA ===== */
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+.question-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.option {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.option:hover:not(.disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+.option .letter {
+  font-weight: 700;
+  color: #94a3b8;
+  min-width: 24px;
+}
+.option.correct {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+.option.correct .letter { color: #16a34a; }
+.option.wrong {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+.option.wrong .letter { color: #dc2626; }
+.option.disabled { cursor: default; opacity: 0.8; }
 
-  <!-- Filtros -->
-  <div class="filter-bar" id="filterBar">
-    <button class="filter-btn active" data-topic="all">Todos</button>
-    <button class="filter-btn" data-topic="protocol">Protocolo</button>
-    <button class="filter-btn" data-topic="security">Segurança</button>
-    <button class="filter-btn" data-topic="java">Java / Spring</button>
-    <button class="filter-btn" data-topic="db">Base de dados</button>
-    <button class="filter-btn" data-topic="frontend">Frontend</button>
-    <button class="filter-btn" data-topic="android">Android</button>
-    <button class="filter-btn" data-topic="infra">Infra</button>
-    <button class="filter-btn" data-topic="arquitetura">Arquitetura</button>
+/* ===== FEEDBACK ===== */
+.feedback {
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  display: none;
+  border-left: 4px solid #3b82f6;
+}
+.feedback.show { display: block; }
+.feedback .explanation {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+.feedback .tip {
+  font-size: 0.85rem;
+  color: #475569;
+  background: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* ===== BOTÕES ===== */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 0.5rem;
+}
+.btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn:hover:not(:disabled) { background: #2563eb; }
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-secondary {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+.btn-secondary:hover:not(:disabled) { background: #cbd5e1; }
+
+/* ===== RESULTADO ===== */
+.result {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+.result .score {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #3b82f6;
+}
+.result .detail {
+  margin-top: 0.5rem;
+  color: #64748b;
+}
+.result .per-topic {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 1rem 0;
+}
+.result .per-topic span {
+  background: #f1f5f9;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+/* ================================================================ */
+/* ===== RESPONSIVO ===== */
+/* ================================================================ */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 1rem;
+  }
+  .header h1 {
+    font-size: 1.3rem;
+    justify-content: center;
+  }
+  .btn-voltar {
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .quiz-wrap {
+    padding: 1.2rem 1rem;
+  }
+  .question-text {
+    font-size: 1.05rem;
+  }
+  .option {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+  .filter-btn {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+  }
+  .btn {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.1rem;
+  }
+  .header h1 span {
+    display: block;
+    font-size: 0.7rem;
+    margin-left: 0;
+  }
+  .quiz-wrap {
+    padding: 1rem 0.8rem;
+  }
+  .filter-bar {
+    justify-content: center;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn {
+    width: 100%;
+  }
+}
+</style>
+
+<div class="container">
+  <!-- ===== CABEÇALHO ===== -->
+  <div class="header">
+    <h1>
+      🧠 Quiz FinFlow
+      <span>Teste os seus conhecimentos técnicos</span>
+    </h1>
+    <a href="index.html" class="btn-voltar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Voltar
+    </a>
   </div>
 
-  <!-- Área de jogo -->
-  <div id="gameArea">
-    <div class="question-header">
-      <span id="progress">Pergunta 1 de 10</span>
-      <span id="scoreDisplay">✅ 0</span>
-    </div>
-    <div class="question-text" id="questionText">Carregando pergunta...</div>
-    <div class="options" id="optionsContainer"></div>
-    <div class="feedback" id="feedback">
-      <div class="explanation" id="explanationText"></div>
-      <div class="tip" id="tipText"></div>
-    </div>
-    <div class="actions">
-      <button class="btn btn-secondary" id="resetBtn" style="display:none;">↻ Recomeçar</button>
-      <button class="btn" id="nextBtn" disabled>Próxima →</button>
-    </div>
-  </div>
+  <!-- ===== QUIZ ===== -->
+  <div class="quiz-wrap" id="app">
+    <div class="subtitle">+100 perguntas para testar os teus conhecimentos sobre o projeto</div>
 
-  <!-- Resultado -->
-  <div id="resultArea" style="display:none;" class="result">
-    <div class="score" id="finalScore">0%</div>
-    <div class="detail" id="finalDetail"></div>
-    <div class="per-topic" id="perTopicStats"></div>
-    <button class="btn" id="restartFromResult">↻ Refazer quiz</button>
+    <!-- Filtros -->
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-topic="all">Todos</button>
+      <button class="filter-btn" data-topic="protocol">Protocolo</button>
+      <button class="filter-btn" data-topic="security">Segurança</button>
+      <button class="filter-btn" data-topic="java">Java / Spring</button>
+      <button class="filter-btn" data-topic="db">Base de dados</button>
+      <button class="filter-btn" data-topic="frontend">Frontend</button>
+      <button class="filter-btn" data-topic="android">Android</button>
+      <button class="filter-btn" data-topic="infra">Infra</button>
+      <button class="filter-btn" data-topic="arquitetura">Arquitetura</button>
+    </div>
+
+    <!-- Área de jogo -->
+    <div id="gameArea">
+      <div class="question-header">
+        <span id="progress">Pergunta 1 de 10</span>
+        <span id="scoreDisplay">✅ 0</span>
+      </div>
+      <div class="question-text" id="questionText">Carregando pergunta...</div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback">
+        <div class="explanation" id="explanationText"></div>
+        <div class="tip" id="tipText"></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="resetBtn" style="display:none;">↻ Recomeçar</button>
+        <button class="btn" id="nextBtn" disabled>Próxima →</button>
+      </div>
+    </div>
+
+    <!-- Resultado -->
+    <div id="resultArea" style="display:none;" class="result">
+      <div class="score" id="finalScore">0%</div>
+      <div class="detail" id="finalDetail"></div>
+      <div class="per-topic" id="perTopicStats"></div>
+      <button class="btn" id="restartFromResult">↻ Refazer quiz</button>
+    </div>
   </div>
 </div>
 
 <script>
-// ============================================================
+// ================================================================
+//  FUNÇÃO PARA EMBARALHAR AS OPÇÕES DE UMA PERGUNTA
+// ================================================================
+function shuffleQuestionOptions(q) {
+  // Cria um array com cada opção e um marcador booleano
+  const items = q.options.map((text, idx) => ({
+    text,
+    isCorrect: idx === q.correct
+  }));
+
+  // Embaralha (Fisher-Yates)
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+
+  // Extrai as opções embalhadas
+  const newOptions = items.map(item => item.text);
+  // Encontra o novo índice da resposta correta
+  const newCorrect = items.findIndex(item => item.isCorrect);
+
+  // Retorna uma nova cópia da pergunta com as opções reorganizadas
+  return { ...q, options: newOptions, correct: newCorrect };
+}
+
+// ================================================================
 //  PERGUNTAS – 112 perguntas sobre o FinFlow
-// ============================================================
+// ================================================================
 const questions = [
   // ========== PROTOCOLO / WEB (16 perguntas) ==========
   {
@@ -1722,9 +1853,9 @@ const questions = [
   }
 ];
 
-// ============================================================
+// ================================================================
 //  LÓGICA DO QUIZ
-// ============================================================
+// ================================================================
 const app = {
   filteredQuestions: [],
   currentIndex: 0,
@@ -1790,7 +1921,7 @@ const app = {
     } else {
       this.filteredQuestions = questions.filter(q => q.topic === topic);
     }
-    // Embaralhar para evitar viés de ordem
+    // Embaralhar as perguntas para evitar viés de ordem
     this.filteredQuestions = this.shuffleArray(this.filteredQuestions);
     this.totalQuestions = this.filteredQuestions.length;
     this.currentIndex = 0;
@@ -1815,7 +1946,10 @@ const app = {
       return;
     }
 
-    const q = this.filteredQuestions[this.currentIndex];
+    // Pega a pergunta atual e EMBARALHA AS OPÇÕES
+    let q = this.filteredQuestions[this.currentIndex];
+    q = shuffleQuestionOptions(q);  // <-- AQUI ESTÁ A NOVIDADE
+
     this.el.progress.textContent = `Pergunta ${this.currentIndex+1} de ${this.totalQuestions}`;
     this.el.scoreDisplay.textContent = `✅ ${this.score}`;
     this.el.questionText.textContent = q.question;
@@ -1838,6 +1972,9 @@ const app = {
     this.el.nextBtn.disabled = true;
     this.answered = false;
 
+    // Guardar a pergunta (já com opções embaralhadas) para usar no handleOptionClick
+    this.currentQuestion = q;
+
     // Adicionar listeners
     this.el.optionsContainer.querySelectorAll('.option').forEach(el => {
       el.addEventListener('click', () => this.handleOptionClick(el));
@@ -1848,7 +1985,7 @@ const app = {
     if (this.answered) return;
     this.answered = true;
 
-    const q = this.filteredQuestions[this.currentIndex];
+    const q = this.currentQuestion;
     const selected = parseInt(el.dataset.index);
     const isCorrect = (selected === q.correct);
 
@@ -1907,7 +2044,7 @@ const app = {
       let html = '<div style="margin-top:0.5rem;font-weight:600;">Temas abrangidos:</div><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">';
       topics.forEach(t => {
         const count = stats[t].total;
-        html += `<span style="background:#e2e8f0;padding:2px 12px;border-radius:16px;font-size:0.8rem;">${t} (${count})</span>`;
+        html += `<span style="background:#f1f5f9;padding:2px 12px;border-radius:16px;font-size:0.8rem;">${t} (${count})</span>`;
       });
       html += '</div>';
       this.el.perTopicStats.innerHTML = html;
@@ -1932,5 +2069,3 @@ const app = {
 // Iniciar
 document.addEventListener('DOMContentLoaded', () => app.init());
 </script>
-</body>
-</html>

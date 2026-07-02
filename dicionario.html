@@ -1,232 +1,25 @@
 <h2 class="sr-only">Dicionário interativo de termos técnicos do projeto FinFlow — pesquise e filtre por categoria</h2>
 
 <style>
-/* ===== ESTILOS BASE ===== */
-.dict-wrap {
-  padding: 1rem 0.5rem;
+/* ============================================================ */
+/* ===== ESTILOS IGUAIS AOS DA ESTRUTURA ===== */
+/* ============================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  color: #1e293b;
+  padding: 1rem;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 4px;
 }
 
-.dict-search-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.dict-search-row input {
-  flex: 1;
-  min-width: 180px;
-  padding: 10px 14px;
-  font-size: 16px; /* Evita zoom no iOS */
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  background: var(--surface-1);
-  color: var(--text-primary);
-  width: 100%;
-}
-
-.filter-bar {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 1.25rem;
-  justify-content: center;
-}
-
-.filter-btn {
-  font-size: 12px;
-  padding: 6px 14px;
-  border-radius: var(--radius);
-  border: 0.5px solid var(--border-strong);
-  background: var(--surface-1);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-
-.filter-btn.active {
-  background: var(--bg-accent);
-  color: var(--text-accent);
-  border-color: var(--border-accent);
-}
-
-.filter-btn:hover {
-  border-color: var(--border-stronger);
-  color: var(--text-primary);
-}
-
-.dict-count {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-/* ===== GRELHA DE CARTÕES ===== */
-.dict-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 12px;
-}
-
-.dict-card {
-  background: var(--surface-2);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  word-break: break-word; /* Evita overflow de texto */
-}
-
-.dict-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.dict-term {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-}
-
-.dict-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.dict-full {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.dict-meaning {
-  font-size: 13px;
-  color: var(--text-primary);
-  line-height: 1.55;
-}
-
-.dict-use {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  border-left: 2px solid var(--border-strong);
-  padding-left: 8px;
-  margin-top: 2px;
-}
-
-/* ===== CORES DOS BADGES ===== */
-.badge-protocol  { background: var(--bg-accent);   color: var(--text-accent); }
-.badge-security  { background: var(--bg-danger);   color: var(--text-danger); }
-.badge-java      { background: var(--bg-pro);      color: var(--text-pro); }
-.badge-db        { background: var(--bg-warning);  color: var(--text-warning); }
-.badge-frontend  { background: var(--bg-success);  color: var(--text-success); }
-.badge-infra     { background: var(--bg-neutral, var(--surface-1)); color: var(--text-secondary); border: 0.5px solid var(--border-strong); }
-.badge-android   { background: #e8f5e9; color: #2e7d32; }
-
-/* ================================================================ */
-/* ===== RESPONSIVO – FORÇA CARTÕES EMPILHADOS EM TELEMÓVEIS ===== */
-/* ================================================================ */
-
-/* Tablets e telemóveis grandes (≤ 768px) */
-@media (max-width: 768px) {
-  .dict-wrap {
-    padding: 0.5rem;
-  }
-
-  .dict-search-row input {
-    font-size: 16px;
-    padding: 12px 14px;
-  }
-
-  .filter-bar {
-    gap: 4px;
-    justify-content: center;
-  }
-
-  .filter-btn {
-    font-size: 11px;
-    padding: 6px 10px;
-    flex: 1 0 auto;
-    min-width: 60px;
-    text-align: center;
-  }
-
-  /* ★★★ FORÇA UMA COLUNA (CARTÕES EMPILHADOS) ★★★ */
-  .dict-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px;
-  }
-
-  .dict-card {
-    padding: 0.9rem;
-  }
-
-  .dict-term {
-    font-size: 14px;
-  }
-
-  .dict-badge {
-    font-size: 9px;
-    padding: 2px 6px;
-  }
-
-  .dict-meaning {
-    font-size: 12.5px;
-  }
-
-  .dict-use {
-    font-size: 11.5px;
-    padding-left: 6px;
-  }
-
-  .dict-count {
-    font-size: 12px;
-  }
-}
-
-/* Telemóveis pequenos (≤ 480px) */
-@media (max-width: 480px) {
-  .filter-btn {
-    font-size: 10px;
-    padding: 4px 8px;
-    min-width: 50px;
-  }
-
-  .dict-card {
-    padding: 0.7rem;
-  }
-
-  .dict-term {
-    font-size: 13px;
-  }
-
-  .dict-badge {
-    font-size: 8px;
-    padding: 1px 5px;
-  }
-
-  .dict-meaning {
-    font-size: 12px;
-  }
-
-  .dict-use {
-    font-size: 11px;
-  }
-}
-
-  /* ===== CABEÇALHO ===== */
+/* ===== CABEÇALHO ===== */
 .header {
   display: flex;
   justify-content: space-between;
@@ -247,6 +40,7 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  margin: 0;
 }
 .header h1 span {
   font-size: 0.8rem;
@@ -277,6 +71,156 @@
   width: 18px;
   height: 18px;
 }
+
+/* ===== DICIONÁRIO (estrutura adaptada) ===== */
+.dict-wrap {
+  padding: 0;
+  margin: 0;
+}
+
+.dict-search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.dict-search-row input {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: white;
+  color: #1e293b;
+  width: 100%;
+}
+.dict-search-row input:focus {
+  outline: 2px solid #3b82f6;
+  border-color: transparent;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  justify-content: center;
+}
+.filter-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+.filter-btn:hover:not(.active) {
+  background: #f1f5f9;
+}
+
+.dict-count {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ===== GRELHA DE CARTÕES (igual à estrutura) ===== */
+.dict-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.dict-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  word-break: break-word;
+  transition: box-shadow 0.15s;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+.dict-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.dict-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dict-term {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0b2b44;
+  font-family: 'Courier New', monospace;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+.dict-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* ===== CORES DOS BADGES (adaptadas do dicionário) ===== */
+.badge-protocol  { background: #e8f0fe; color: #1a56db; }
+.badge-security  { background: #fef3c7; color: #92400e; }
+.badge-java      { background: #fdf4ff; color: #7e22ce; }
+.badge-db        { background: #ecfdf5; color: #065f46; }
+.badge-frontend  { background: #fdf2f8; color: #be185d; }
+.badge-infra     { background: #f8fafc; color: #475569; border: 0.5px solid #cbd5e1; }
+.badge-android   { background: #e8f5e9; color: #1b5e20; }
+
+.dict-full {
+  font-size: 12px;
+  color: #64748b;
+}
+.dict-meaning {
+  font-size: 13px;
+  color: #1e293b;
+  line-height: 1.55;
+}
+.dict-use {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+  border-left: 2px solid #cbd5e1;
+  padding-left: 8px;
+  margin-top: 2px;
+}
+.dict-use strong {
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ================================================================ */
+/* ===== RESPONSIVO – MESMO DA ESTRUTURA ===== */
+/* ================================================================ */
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -292,31 +236,128 @@
     justify-content: center;
     padding: 10px;
   }
+
+  .dict-search-row input {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+
+  .filter-bar {
+    gap: 4px;
+    justify-content: center;
+  }
+  .filter-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+    flex: 1 0 auto;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  /* ★★★ FORÇA UMA COLUNA (CARTÕES EMPILHADOS) ★★★ */
+  .dict-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  .dict-card {
+    padding: 0.9rem;
+  }
+  .dict-term {
+    font-size: 14px;
+  }
+  .dict-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  .dict-meaning {
+    font-size: 12.5px;
+  }
+  .dict-use {
+    font-size: 11.5px;
+    padding-left: 6px;
+  }
+  .dict-count {
+    font-size: 12px;
+  }
 }
 
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.1rem;
+  }
+  .header h1 span {
+    display: block;
+    font-size: 0.7rem;
+    margin-left: 0;
+  }
+
+  .filter-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+    min-width: 50px;
+  }
+
+  .dict-card {
+    padding: 0.7rem;
+  }
+  .dict-term {
+    font-size: 13px;
+  }
+  .dict-badge {
+    font-size: 8px;
+    padding: 1px 5px;
+  }
+  .dict-meaning {
+    font-size: 12px;
+  }
+  .dict-use {
+    font-size: 11px;
+  }
+}
 </style>
 
-<div class="dict-wrap">
-  <div class="dict-search-row">
-    <input type="text" id="dict-search" placeholder="Pesquisar termo... ex: JWT, GET, CORS" oninput="filterDict()">
+<div class="container">
+  <!-- ===== CABEÇALHO ===== -->
+  <div class="header">
+    <h1>
+      📖 Dicionário Técnico
+      <span>98+ termos, definições e exemplos do FinFlow</span>
+    </h1>
+    <a href="index.html" class="btn-voltar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Voltar
+    </a>
   </div>
-  <div class="filter-bar" id="filter-bar">
-    <button class="filter-btn active" data-cat="all" onclick="setFilter('all',this)">Todos</button>
-    <button class="filter-btn" data-cat="protocol" onclick="setFilter('protocol',this)">Protocolo / Web</button>
-    <button class="filter-btn" data-cat="security" onclick="setFilter('security',this)">Segurança</button>
-    <button class="filter-btn" data-cat="java" onclick="setFilter('java',this)">Java / Spring</button>
-    <button class="filter-btn" data-cat="db" onclick="setFilter('db',this)">Base de dados</button>
-    <button class="filter-btn" data-cat="frontend" onclick="setFilter('frontend',this)">Frontend / JS</button>
-    <button class="filter-btn" data-cat="android" onclick="setFilter('android',this)">Android / Kotlin</button>
-    <button class="filter-btn" data-cat="infra" onclick="setFilter('infra',this)">Infra / Deploy</button>
+
+  <!-- ===== DICIONÁRIO ===== -->
+  <div class="dict-wrap">
+    <div class="dict-search-row">
+      <input type="text" id="dict-search" placeholder="Pesquisar termo... ex: JWT, GET, CORS" oninput="filterDict()">
+    </div>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-cat="all" onclick="setFilter('all',this)">Todos</button>
+      <button class="filter-btn" data-cat="protocol" onclick="setFilter('protocol',this)">Protocolo / Web</button>
+      <button class="filter-btn" data-cat="security" onclick="setFilter('security',this)">Segurança</button>
+      <button class="filter-btn" data-cat="java" onclick="setFilter('java',this)">Java / Spring</button>
+      <button class="filter-btn" data-cat="db" onclick="setFilter('db',this)">Base de dados</button>
+      <button class="filter-btn" data-cat="frontend" onclick="setFilter('frontend',this)">Frontend / JS</button>
+      <button class="filter-btn" data-cat="android" onclick="setFilter('android',this)">Android / Kotlin</button>
+      <button class="filter-btn" data-cat="infra" onclick="setFilter('infra',this)">Infra / Deploy</button>
+    </div>
+    <div class="dict-count" id="dict-count"></div>
+    <div class="dict-grid" id="dict-grid"></div>
   </div>
-  <div class="dict-count" id="dict-count"></div>
-  <div class="dict-grid" id="dict-grid"></div>
 </div>
 
 <script>
-// ===== TERMOS =====
+// ================================================================
+//  TERMOS – 98+ termos do FinFlow
+// ================================================================
 const terms = [
+  // ---- PROTOCOLO / WEB ----
   { term:"API", full:"Application Programming Interface", cat:"protocol", badge:"Protocolo", meaning:"Conjunto de regras e endpoints que definem como dois sistemas comunicam. Uma API REST expõe URLs que um cliente pode chamar para obter ou enviar dados.", use:"No FinFlow, o backend Spring Boot expõe a API REST em /api/expenses, /api/incomes, etc. Qualquer cliente — browser ou Android — comunica com o servidor através desta API." },
   { term:"REST", full:"Representational State Transfer", cat:"protocol", badge:"Protocolo", meaning:"Estilo arquitectural para sistemas distribuídos baseado em HTTP. Os princípios centrais são: recursos identificados por URLs, verbos HTTP padrão (GET/POST/PUT/DELETE), respostas em JSON, e servidor STATELESS.", use:"O FinFlow segue o padrão REST: /api/expenses é o recurso 'despesas', GET lista-as, POST cria uma, PUT actualiza, DELETE elimina." },
   { term:"HTTP", full:"HyperText Transfer Protocol", cat:"protocol", badge:"Protocolo", meaning:"Protocolo de comunicação da web que define como cliente e servidor trocam mensagens. Cada mensagem tem um método (verbo), um URL, cabeçalhos, e opcionalmente um corpo.", use:"Todos os pedidos do frontend web e Android ao backend usam HTTP/HTTPS. O Spring Boot recebe esses pedidos via Tomcat embutido." },
@@ -330,6 +371,8 @@ const terms = [
   { term:"TCP", full:"Transmission Control Protocol", cat:"protocol", badge:"Protocolo", meaning:"Protocolo de transporte da internet que garante entrega fiável e ordenada de pacotes de dados entre dois endpoints. O HTTP é construído por cima do TCP.", use:"Cada ligação HTTP ao backend Railway usa TCP. O HikariCP mantém um pool de ligações TCP abertas ao PostgreSQL para evitar o custo de estabelecer uma nova ligação a cada pedido." },
   { term:"URL", full:"Uniform Resource Locator", cat:"protocol", badge:"Protocolo", meaning:"Endereço que identifica um recurso na web. Composto por esquema (https://), domínio, caminho (/api/expenses), e opcionalmente parâmetros de query (?page=1).", use:"O BASE_URL do FinFlow é https://finflow-backend-production-5d94.up.railway.app. Cada endpoint acrescenta um caminho a este URL base." },
   { term:"Header", full:"Cabeçalho HTTP", cat:"protocol", badge:"Protocolo", meaning:"Metadados enviados junto com um pedido ou resposta HTTP. Transportam informações como o tipo de conteúdo (Content-Type), autenticação (Authorization), controlo de cache, e CORS.", use:"Cada pedido autenticado do FinFlow inclui o cabeçalho Authorization: Bearer <token>. O Content-Type: application/json indica que o corpo é JSON." },
+
+  // ---- SEGURANÇA ----
   { term:"JWT", full:"JSON Web Token", cat:"security", badge:"Segurança", meaning:"Token de autenticação stateless composto por três partes em Base64URL separadas por pontos: header (algoritmo), payload (email, emissão, expiração), e signature (HMAC). A assinatura garante que o token não foi adulterado.", use:"No FinFlow, o JwtUtil gera o token no login com validade de 24h. O JwtAuthenticationFilter valida o token em cada pedido às rotas protegidas." },
   { term:"HMAC-SHA", full:"Hash-based Message Authentication Code — Secure Hash Algorithm", cat:"security", badge:"Segurança", meaning:"Algoritmo criptográfico que combina uma chave secreta com uma função de hash (SHA-256/384/512) para gerar uma assinatura. Não é reversível — não se 'descodifica', apenas se verifica re-calculando a assinatura.", use:"A JJWT usa HMAC-SHA (versão determinada pelo tamanho da chave) para assinar os tokens JWT. O jwt.secret do application.properties é a chave secreta." },
   { term:"BCrypt", full:"", cat:"security", badge:"Segurança", meaning:"Algoritmo de hashing de passwords deliberadamente lento, com salt automático incorporado. O salt é um valor aleatório único por password, o que garante que duas passwords iguais geram hashes diferentes.", use:"No AuthService, passwordEncoder.encode(password) gera o hash BCrypt antes de guardar na BD. No login, passwordEncoder.matches(rawPassword, hash) verifica sem 'decifrar'." },
@@ -338,8 +381,22 @@ const terms = [
   { term:"STATELESS", full:"Sem estado", cat:"security", badge:"Segurança", meaning:"Arquitectura onde o servidor não guarda memória de pedidos anteriores. Cada pedido contém toda a informação necessária para ser processado de forma completamente independente.", use:"O SecurityConfig define SessionCreationPolicy.STATELESS — o servidor nunca cria sessões HTTP. Cada pedido traz o próprio JWT. Permite escalar horizontalmente sem partilha de estado." },
   { term:"Salt", full:"", cat:"security", badge:"Segurança", meaning:"Valor aleatório gerado para cada password antes de fazer o hash. Garante que dois utilizadores com a mesma password têm hashes completamente diferentes na base de dados, impedindo ataques de rainbow table.", use:"O BCrypt incorpora o salt automaticamente no hash gerado. O passwordEncoder.matches() extrai o salt do hash armazenado para verificar a password submetida." },
   { term:"Bearer token", full:"", cat:"security", badge:"Segurança", meaning:"Convenção HTTP onde o token de autenticação é enviado no cabeçalho Authorization com o prefixo 'Bearer ' (com espaço). O servidor extrai o token removendo esse prefixo.", use:"No JwtAuthenticationFilter: authHeader.substring(7) remove os 7 caracteres de 'Bearer ' e extrai o token JWT puro para validação." },
+  { term:"JwtUtil", full:"", cat:"security", badge:"Segurança", meaning:"Classe utilitária do FinFlow que gera e valida tokens JWT. Usa a biblioteca JJWT para construir tokens com assinatura HMAC-SHA, extrair o email (subject) do token, e verificar a expiração.", use:"O JwtUtil.generateToken(email) cria um JWT com validade de 24h. O JwtUtil.validateToken(token) é chamado pelo filtro de autenticação em cada pedido. A chave secreta vem do application.properties." },
+  { term:"JwtAuthenticationFilter", full:"", cat:"security", badge:"Segurança", meaning:"Filtro Spring Security que interceta pedidos HTTP, extrai o token JWT do cabeçalho Authorization, valida-o com JwtUtil, e, se válido, carrega o utilizador da BD e coloca-o no SecurityContextHolder.", use:"O JwtAuthenticationFilter corre antes de qualquer controlador. Ignora as rotas /api/auth/** e /auth/**. Para os restantes pedidos, se o token for inválido, o filtro bloqueia com 401/403. Se válido, o utilizador fica disponível em todo o contexto da requisição." },
+  { term:"SecurityContextHolder", full:"", cat:"security", badge:"Segurança", meaning:"Classe do Spring Security que mantém o contexto de autenticação da thread actual (utilizando ThreadLocal). Contém um Authentication com os detalhes do utilizador autenticado.", use:"Após o JwtAuthenticationFilter validar o token, o objeto User é colocado no SecurityContextHolder. Os serviços podem obter o utilizador autenticado com SecurityContextHolder.getContext().getAuthentication().getPrincipal()." },
+  { term:"OWASP", full:"Open Web Application Security Project", cat:"security", badge:"Segurança", meaning:"Organização sem fins lucrativos que publica as melhores práticas e os principais riscos de segurança para aplicações web (OWASP Top 10).", use:"Seguimos as recomendações OWASP para JWT (armazenamento seguro, assinatura HMAC), BCrypt para passwords, desativação de CSRF em APIs stateless, e configuração correta de CORS." },
+  { term:"Rainbow Table", full:"", cat:"security", badge:"Segurança", meaning:"Tabela pré-calculada de hashes usada para reverter hashes de passwords rapidamente. A eficácia é reduzida com o uso de salt.", use:"O BCrypt gera um salt aleatório para cada password, tornando as rainbow tables inúteis — mesmo que dois utilizadores tenham a mesma password, os hashes armazenados são completamente diferentes." },
+  { term:"Brute Force", full:"", cat:"security", badge:"Segurança", meaning:"Ataque que tenta todas as combinações possíveis de password até encontrar a correta. A lentidão do BCrypt (deliberadamente lento) dificulta este ataque.", use:"O BCrypt é configurado com um fator de custo (ex: 10) que torna cada tentativa de hash demorada (≈0.1s). Isto, combinado com rate limiting (sugerido), protege o FinFlow contra ataques de força bruta." },
+  { term:"Enumeração de Utilizadores", full:"", cat:"security", badge:"Segurança", meaning:"Técnica para descobrir se um email está registado com base na resposta do servidor (ex: mensagens diferentes para 'email não encontrado' vs 'password incorreta').", use:"No FinFlow, o endpoint de recuperação de password (não implementado) deveria devolver sempre a mesma mensagem genérica para evitar que um atacante possa enumerar utilizadores válidos." },
+
+  // ---- JAVA / SPRING ----
   { term:"Boilerplate", full:"Código estrutural repetitivo", cat:"java", badge:"Java / Spring", meaning:"Blocos de código que se repetem em vários locais do projeto com pouca ou nenhuma alteração. É o código 'cerimonial' necessário para que o framework funcione, mas que não contém lógica de negócio específica. O Spring Boot foi criado para reduzir este boilerplate.", use:"No FinFlow, o boilerplate inclui: a estrutura de pastas gerada pelo Spring Initializr, o ficheiro pom.xml, os getters/setters manuais das entidades (sem Lombok), a configuração base do SecurityConfig, e a repetição de anotações JPA como @Entity, @Id e @Column em cada modelo." },
   { term:"Spring Boot", full:"", cat:"java", badge:"Java / Spring", meaning:"Framework Java que simplifica o desenvolvimento de aplicações Spring com configuração automática, servidor embutido, e starters. Elimina a configuração XML manual e o deployment em servidor externo.", use:"O backend FinFlow é uma aplicação Spring Boot 3.5. O FinflowBackendApplication.java com @SpringBootApplication é o ponto de entrada que arranca o servidor Tomcat embutido." },
+  { term:"Spring Initializr", full:"", cat:"java", badge:"Java / Spring", meaning:"Ferramenta web (start.spring.io) que gera a estrutura base de um projecto Spring Boot com as dependências escolhidas. Produz um zip com o pom.xml, a classe principal, e a estrutura de pastas.", use:"O FinFlow foi iniciado com o Spring Initializr, seleccionando Spring Web, Spring Data JPA, Spring Security e PostgreSQL. O projecto gerado serviu de base para todo o desenvolvimento." },
+  { term:"@SpringBootApplication", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação que combina @Configuration, @EnableAutoConfiguration e @ComponentScan. É o ponto de entrada da aplicação Spring Boot.", use:"A classe FinflowBackendApplication.java está anotada com @SpringBootApplication. O método main() chama SpringApplication.run() para iniciar o contexto Spring e o servidor embutido." },
+  { term:"@ComponentScan", full:"", cat:"java", badge:"Java / Spring", meaning:"Instrui o Spring a varrer os pacotes especificados em busca de beans (@Service, @Controller, @Repository, etc.) e registá-los no IoC container.", use:"O @SpringBootApplication já inclui @ComponentScan implicitamente, escaneando o pacote raiz e subpacotes. Assim, todos os nossos componentes são detetados automaticamente." },
+  { term:"Injeção de Dependências (DI)", full:"Dependency Injection", cat:"java", badge:"Java / Spring", meaning:"Padrão de design onde o framework (Spring) cria e fornece as dependências de um objeto, em vez de o próprio objeto as instanciar com 'new'. Promove baixo acoplamento e facilita testes.", use:"Usamos @Autowired para injetar repositórios nos serviços (ex: @Autowired ExpenseRepository). O Spring cria as instâncias e injeta-as automaticamente, sem que precisemos de instanciar com new." },
+  { term:"IoC Container", full:"Inversion of Control Container", cat:"java", badge:"Java / Spring", meaning:"Contentor do Spring que gere o ciclo de vida dos beans (criação, configuração, e destruição). A inversão de controlo significa que o framework controla as instâncias, não o programador.", use:"O ApplicationContext, criado por SpringApplication.run(), é o IoC container do FinFlow. Todos os beans (JwtUtil, UserService, etc.) são geridos por este container." },
   { term:"Bean", full:"", cat:"java", badge:"Java / Spring", meaning:"Objecto gerido pelo contentor de injecção de dependências do Spring (ApplicationContext). O Spring cria, configura, e gere o ciclo de vida dos beans automaticamente.", use:"BCryptPasswordEncoder, JwtUtil, JwtAuthenticationFilter são todos beans. A anotação @Bean no SecurityConfig regista-os. @Service, @Component, @Repository também criam beans." },
   { term:"Tomcat", full:"Apache Tomcat", cat:"java", badge:"Java / Spring", meaning:"Servidor de aplicações Java (servlet container) que processa pedidos HTTP. No Spring Boot, está embutido no JAR da aplicação — não é necessário instalar separadamente.", use:"Quando o FinFlow arranca com java -jar, o Tomcat embutido inicia na porta ${PORT:8080}, começa a aceitar pedidos HTTP, e entrega-os ao Spring MVC para processamento." },
   { term:"MVC", full:"Model-View-Controller", cat:"java", badge:"Java / Spring", meaning:"Padrão arquitectural que separa a aplicação em três camadas: Model (dados e lógica de negócio), View (apresentação), e Controller (recebe pedidos e coordena). No Spring Boot REST, a View é substituída por JSON.", use:"Os @RestController do FinFlow são a camada Controller. Os @Service são o Model (lógica). Como é uma API REST, não há View — o Jackson serializa os objectos para JSON." },
@@ -351,44 +408,22 @@ const terms = [
   { term:"@Transactional", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação que garante que um método corre dentro de uma transacção de base de dados. Se qualquer operação falhar, todas as alterações são revertidas (rollback). readOnly=true optimiza transacções apenas de leitura.", use:"Usado no CreditCardService com @Transactional(readOnly = true) nos métodos de leitura. Garante consistência em operações que envolvem múltiplos passos na BD." },
   { term:"DTO", full:"Data Transfer Object", cat:"java", badge:"Java / Spring", meaning:"Classe simples que define exactamente que dados entram ou saem da API, separada das entidades internas. Evita expor campos sensíveis e desacopla o contrato público da estrutura interna.", use:"LoginRequest, ExpenseRequest, DashboardResponse são DTOs do FinFlow. O cliente envia categoryId (inteiro), o DTO recebe-o, e o serviço resolve o objecto Category da BD." },
   { term:"@PrePersist", full:"", cat:"java", badge:"Java / Spring", meaning:"Callback JPA executado pelo Hibernate imediatamente antes do primeiro INSERT de uma entidade nova. Permite inicializar campos automaticamente sem intervenção do programador.", use:"Na entidade User: @PrePersist define createdAt, updatedAt = LocalDateTime.now() e active = true. Na Expense: define as duas datas. Corre automaticamente em cada save()." },
+  { term:"@PreUpdate", full:"", cat:"java", badge:"Java / Spring", meaning:"Callback JPA executado pelo Hibernate imediatamente antes de uma entidade ser actualizada (UPDATE). Permite actualizar campos como updatedAt automaticamente.", use:"Na entidade User, o método anotado com @PreUpdate define updatedAt = LocalDateTime.now() sempre que o utilizador é modificado. Assim, a data de última actualização é mantida sem código adicional nos serviços." },
+  { term:"@JsonIgnoreProperties", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação Jackson que especifica propriedades a ignorar durante a serialização/desserialização JSON. Usada para evitar erros de recursão ou exposição de campos internos do Hibernate.", use:"Nas entidades JPA, como User e Expense, adiciona-se @JsonIgnoreProperties({\"hibernateLazyInitializer\", \"handler\"}) para evitar que o Jackson tente serializar os proxies lazy do Hibernate, o que causaria excepções." },
+  { term:"@JsonProperty(access = WRITE_ONLY)", full:"", cat:"java", badge:"Java / Spring", meaning:"Configuração do Jackson que indica que o campo deve ser aceite na desserialização (escrita) mas nunca incluído na serialização (leitura).", use:"No modelo User, o campo password está anotado com @JsonProperty(access = WRITE_ONLY). Assim, a password é aceite no registo/login, mas nunca aparece nas respostas JSON." },
+  { term:"@Column(updatable = false)", full:"", cat:"java", badge:"Java / Spring", meaning:"Configuração JPA que impede que uma coluna seja actualizada em operações UPDATE. Mantém o valor original após a criação.", use:"Todas as entidades usam @Column(updatable = false) no campo createdAt. Assim, a data de criação nunca é sobrescrita por engano." },
+  { term:"@JoinColumn", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação JPA que especifica a coluna de chave estrangeira numa relação entre entidades. Pode definir o nome da coluna, se é nullable, etc.", use:"Em Expense, a relação @ManyToOne @JoinColumn(name = \"user_id\") define que a coluna user_id na tabela expenses é a chave estrangeira para users.id." },
+  { term:"@GeneratedValue(strategy = IDENTITY)", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação JPA que define a estratégia de geração da chave primária. IDENTITY delega a geração para a base de dados (auto-incremento).", use:"Todas as entidades (User, Expense, Income, etc.) usam @GeneratedValue(strategy = GenerationType.IDENTITY) no campo id, fazendo com que o PostgreSQL gere o valor automaticamente com SERIAL." },
+  { term:"FetchType (LAZY vs EAGER)", full:"", cat:"java", badge:"Java / Spring", meaning:"Estratégia de carregamento de relacionamentos JPA. LAZY só carrega os dados quando acedidos (mais eficiente), EAGER carrega imediatamente com a entidade principal.", use:"Na Expense, usamos fetch = FetchType.LAZY para User e Category, para que apenas as despesas sejam carregadas inicialmente. Já em Income, o padrão EAGER é usado para simplificar." },
   { term:"@ManyToOne", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação JPA que define uma relação N-para-1 entre entidades: muitas instâncias da entidade filha estão associadas a uma instância da entidade pai. Cria uma coluna de chave estrangeira na tabela filha.", use:"Na Expense: @ManyToOne @JoinColumn(name='user_id') User user — muitas despesas pertencem a um utilizador. Gera a coluna user_id na tabela expenses com FK para users.id." },
   { term:"BigDecimal", full:"", cat:"java", badge:"Java / Spring", meaning:"Tipo Java para números decimais com precisão exacta arbitrária. Ao contrário de double/float (ponto flutuante binário), não tem erros de arredondamento. Suporta controlo explícito do modo de arredondamento.", use:"Todos os campos de valor monetário no FinFlow (amount em Expense, Income, Goal, CreditCard) usam BigDecimal. 0.1 + 0.2 com BigDecimal dá exactamente 0.3, não 0.30000000000000004." },
   { term:"Stream API", full:"Java Stream API", cat:"java", badge:"Java / Spring", meaning:"API funcional do Java 8+ para processar colecções de forma declarativa. Permite encadear operações como map, filter, reduce, collect, sorted, limit sem loops explícitos.", use:"No DashboardService: incomes.stream().map(Income::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add) — soma todos os valores de receita. Stream.concat() junta as duas listas de transacções." },
   { term:"Optional", full:"java.util.Optional", cat:"java", badge:"Java / Spring", meaning:"Contentor que pode ou não conter um valor. Substitui valores null explícitos e força o programador a tratar o caso de 'não encontrado' explicitamente, evitando NullPointerException.", use:"Os repositórios do FinFlow devolvem Optional<Expense> nos métodos findById. O controlador usa .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build()) para devolver 200 ou 404." },
   { term:"JAR", full:"Java ARchive", cat:"java", badge:"Java / Spring", meaning:"Ficheiro comprimido (ZIP) que empacota classes Java compiladas, recursos, e metadados numa única unidade executável. O Maven gera o JAR no directório target/ com mvn package.", use:"O Railway executa java -jar target/finflow-backend.jar. O JAR inclui o Tomcat embutido, todas as dependências, e os ficheiros de configuração — é o artefacto de deploy completo." },
   { term:"Maven", full:"Apache Maven", cat:"java", badge:"Java / Spring", meaning:"Ferramenta de build e gestão de dependências para Java. O pom.xml define o projecto, as dependências (starters), plugins, e o processo de build. Descarrega bibliotecas do Maven Central automaticamente.", use:"O FinFlow usa Maven. O ficheiro mvnw (Maven Wrapper) permite correr ./mvnw clean package sem ter o Maven instalado. O Railway usa este comando para construir o JAR." },
-  { term:"PostgreSQL", full:"", cat:"db", badge:"Base de dados", meaning:"Sistema de gestão de base de dados relacional open-source, conhecido pela robustez, conformidade SQL, e suporte a tipos de dados avançados como TEXT sem limite, JSONB, e arrays.", use:"Base de dados de produção do FinFlow, alojada no Railway. Armazena as tabelas users, expenses, incomes, goals, categories, credit_cards. Acedida via JDBC com o driver postgresql no pom.xml." },
-  { term:"JDBC", full:"Java Database Connectivity", cat:"db", badge:"Base de dados", meaning:"API Java padrão para comunicação com bases de dados relacionais. Define interfaces como Connection, Statement, ResultSet. O driver específico de cada BD (ex: postgresql.jar) implementa estas interfaces.", use:"O HikariCP abre ligações JDBC ao PostgreSQL. O Hibernate usa JDBC internamente para executar as queries geradas. O spring.datasource.url configura o URL de ligação JDBC." },
-  { term:"HikariCP", full:"Hikari Connection Pool", cat:"db", badge:"Base de dados", meaning:"Pool de ligações JDBC de alto desempenho incluído por defeito no Spring Boot. Mantém um conjunto de ligações TCP abertas ao PostgreSQL e reutiliza-as, evitando o custo de estabelecer uma nova ligação para cada pedido HTTP.", use:"Configurado no application.properties: maximum-pool-size=5, initializationFailTimeout=-1 (aguarda indefinidamente pela BD no arranque — crítico para Railway onde a BD pode iniciar mais tarde que a app)." },
-  { term:"ddl-auto", full:"Data Definition Language — auto configuration", cat:"db", badge:"Base de dados", meaning:"Propriedade do Hibernate que controla o que acontece ao esquema da BD no arranque. 'update': adiciona colunas/tabelas que faltam, nunca apaga dados. 'validate': só verifica. 'create': recria tudo. 'none': não faz nada.", use:"O FinFlow usa ddl-auto=update. Permite evoluir as entidades (ex: adicionar campo bio ao User) sem SQL manual — o Hibernate emite ALTER TABLE automaticamente no próximo arranque." },
-  { term:"Flyway", full:"", cat:"db", badge:"Base de dados", meaning:"Ferramenta de migração de bases de dados baseada em scripts SQL versionados (V1__create_tables.sql, V2__add_column.sql). Regista que migrações já foram executadas e aplica apenas as novas.", use:"Não usado no FinFlow (usa ddl-auto=update em vez disso). Em produção empresarial, Flyway seria preferível — dá controlo total e histórico auditável de cada alteração ao esquema, com suporte a rollback." },
-  { term:"Rollback", full:"", cat:"db", badge:"Base de dados", meaning:"Operação que reverte todas as alterações feitas numa transacção de base de dados quando ocorre um erro. Garante que a BD não fica num estado parcialmente actualizado (inconsistente).", use:"Com @Transactional no Spring, se uma excepção for lançada durante uma operação que envolve múltiplos passos na BD, o Spring faz rollback automático de todas as alterações feitas nessa transacção." },
-  { term:"Fetch API", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"API nativa dos browsers modernos para fazer pedidos HTTP de forma assíncrona com Promises. Substitui o XMLHttpRequest antigo com uma sintaxe mais limpa baseada em async/await.", use:"O api.js do FinFlow usa fetch() para todos os pedidos ao backend. Exemplo: fetch(url, {method:'POST', headers:{Authorization:'Bearer '+token}, body: JSON.stringify(data)})." },
-  { term:"LocalStorage", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Mecanismo de armazenamento de pares chave-valor no browser, persistente entre sessões (não se perde ao fechar o tab). Limitado a strings. Acessível apenas pelo domínio que o criou.", use:"O frontend web do FinFlow guarda o JWT em localStorage com as chaves 'token' e 'finflow_token'. O api.js lê estas chaves em cada pedido para montar o cabeçalho Authorization." },
-  { term:"Promise", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Objecto JavaScript que representa o resultado eventual de uma operação assíncrona. Pode estar pendente, resolvida (com valor), ou rejeitada (com erro). Encadeável com .then() e .catch(), ou com async/await.", use:"O fetch() devolve uma Promise. O despesas.js usa Promise.all([getIncomes(), getExpenses()]) para fazer os dois pedidos em paralelo — tempo total = o mais lento, não a soma dos dois." },
-  { term:"Chart.js", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Biblioteca JavaScript open-source para criar gráficos interactivos em HTML5 Canvas. Suporta linha, barra, pizza, doughnut, radar, entre outros. Carregada via CDN.", use:"O dashboard.js do FinFlow usa Chart.js para renderizar o gráfico de linha com dois datasets (Entradas / Saídas). O método canvas.toDataURL() exporta o gráfico como imagem PNG para o PDF." },
-  { term:"Base64", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Sistema de codificação que converte dados binários (como uma imagem) em texto ASCII. Aumenta o tamanho em ~33% mas permite incluir dados binários em contextos que só aceitam texto (JSON, CSS, HTML).", use:"As fotos de perfil do FinFlow são convertidas para base64 no browser com FileReader.readAsDataURL(). A string resultante é enviada como JSON e guardada no campo avatar_url (TEXT) do PostgreSQL." },
-  { term:"Retrofit", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Biblioteca Android/Kotlin para fazer pedidos HTTP de forma declarativa. Define uma interface com anotações (@GET, @POST, etc.) e o Retrofit gera a implementação em runtime que serializa/deserializa JSON automaticamente.", use:"O ApiService.kt do FinFlow é uma interface Retrofit com todos os endpoints (login, getExpenses, createIncome, etc.). O RetrofitClient.kt constrói o Retrofit com Gson e o interceptor de autenticação." },
-  { term:"OkHttp", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Biblioteca HTTP de baixo nível para Android/Java, usada pelo Retrofit internamente. Suporta interceptors — funções que correm antes de cada pedido e permitem adicionar cabeçalhos ou registar logs.", use:"No RetrofitClient.kt, um interceptor OkHttp lê o token do TokenManager e adiciona Authorization: Bearer <token> a todos os pedidos automaticamente, sem código adicional nas Activities." },
-  { term:"Corrotinas", full:"Kotlin Coroutines", cat:"android", badge:"Android / Kotlin", meaning:"Mecanismo do Kotlin para programação assíncrona sem callbacks. Funções marcadas com 'suspend' podem ser pausadas e retomadas sem bloquear a thread. 'launch {}' inicia uma corrotina.", use:"Todos os métodos do ApiService.kt são 'suspend fun'. As Activities chamam-nos dentro de 'coroutineScope.launch {}' para não bloquear a thread principal (UI thread) do Android." },
-  { term:"Jetpack Compose", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Framework moderno da Google para construir interfaces Android de forma declarativa em Kotlin. A UI é definida como funções @Composable que descrevem o estado visual, em vez de manipular views XML imperativament.", use:"Toda a UI do FinFlow Android (LoginActivity, MainActivity, formulários) é construída com Jetpack Compose. O tema escuro AMOLED é definido em Theme.kt com MaterialTheme e as cores em Color.kt." },
-  { term:"SharedPreferences", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Mecanismo de armazenamento local Android para pares chave-valor simples, persistente entre sessões. Privado à aplicação. Equivalente ao localStorage do browser, mas para Android.", use:"O TokenManager.kt do FinFlow usa SharedPreferences para guardar o JWT (saveToken/getToken), o nome do utilizador (saveUser/getUserName), e a foto de perfil (saveProfilePicture)." },
-  { term:"Railway", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Plataforma de cloud (PaaS — Platform as a Service) que automatiza o deploy de aplicações a partir de um repositório Git. Detecta a linguagem/framework, constrói o artefacto, e executa em containers.", use:"O backend FinFlow e a base de dados PostgreSQL estão ambos alojados no Railway. A cada git push, o Railway reconstrói o JAR com ./mvnw package e relança a aplicação automaticamente." },
-  { term:"Deploy", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Processo de disponibilizar uma nova versão de uma aplicação no ambiente de produção. Pode ser manual (copiar ficheiros) ou automático (CI/CD integrado com Git, como no Railway).", use:"No FinFlow, o deploy é automático: git push → Railway detecta a mudança → mvn package → java -jar → nova versão disponível no URL de produção em poucos minutos." },
-  { term:"Variável de ambiente", full:"Environment variable", cat:"infra", badge:"Infra / Deploy", meaning:"Variável do sistema operativo acessível à aplicação em runtime. Usada para configuração sensível (credenciais, segredos) que não deve entrar no repositório Git.", use:"DATABASE_URL, JWT_SECRET, PORT são variáveis de ambiente configuradas no dashboard do Railway. O application.properties lê-as com ${DATABASE_URL:valor_padrão} — produção usa a variável, desenvolvimento local usa o padrão." },
-  { term:"CDN", full:"Content Delivery Network", cat:"infra", badge:"Infra / Deploy", meaning:"Rede de servidores distribuídos geograficamente que serve ficheiros estáticos (JS, CSS, imagens) ao utilizador a partir do servidor mais próximo, reduzindo a latência.", use:"O frontend FinFlow carrega Chart.js e html2pdf.js via CDN (cdnjs.cloudflare.com) nas tags <script> do HTML, em vez de os incluir no repositório." },
-  { term:"CORS preflight", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Pedido OPTIONS automático que o browser envia antes de um pedido 'não simples' (com cabeçalho Authorization ou Content-Type: application/json) para verificar se o servidor autoriza a origem. Se o servidor não responder correctamente, o browser cancela o pedido real.", use:"No FinFlow, houve um problema de CORS com filtro duplicado — os cabeçalhos Access-Control-Allow-Origin apareciam duas vezes. Resolvido centralizando toda a configuração no corsConfigurationSource() do SecurityConfig." },
-  { term:"Spring Initializr", full:"", cat:"java", badge:"Java / Spring", meaning:"Ferramenta web (start.spring.io) que gera a estrutura base de um projecto Spring Boot com as dependências escolhidas. Produz um zip com o pom.xml, a classe principal, e a estrutura de pastas.", use:"O FinFlow foi iniciado com o Spring Initializr, seleccionando Spring Web, Spring Data JPA, Spring Security e PostgreSQL. O projecto gerado serviu de base para todo o desenvolvimento." },
   { term:"pom.xml", full:"Project Object Model", cat:"java", badge:"Java / Spring", meaning:"Ficheiro de configuração central do Maven. Define o grupo, artefacto, versão, dependências (starters), plugins de build, e propriedades. O Maven lê este ficheiro para gerir o ciclo de vida do projecto.", use:"O pom.xml do FinFlow contém as dependências do Spring Boot, o driver PostgreSQL, a biblioteca JJWT para JWT, e o plugin spring-boot-maven-plugin para criar o JAR executável." },
-  { term:"application.properties", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Ficheiro de configuração da aplicação Spring Boot, localizado em src/main/resources. Define propriedades como URL da BD, credenciais, segredo JWT, e comportamentos do Hibernate/HikariCP.", use:"O FinFlow usa application.properties para configurar a ligação à BD (DATABASE_URL), o ddl-auto=update, o pool HikariCP, e o jwt.secret. Em produção, estas propriedades são sobrepostas por variáveis de ambiente." },
-  { term:"JwtUtil", full:"", cat:"security", badge:"Segurança", meaning:"Classe utilitária do FinFlow que gera e valida tokens JWT. Usa a biblioteca JJWT para construir tokens com assinatura HMAC-SHA, extrair o email (subject) do token, e verificar a expiração.", use:"O JwtUtil.generateToken(email) cria um JWT com validade de 24h. O JwtUtil.validateToken(token) é chamado pelo filtro de autenticação em cada pedido. A chave secreta vem do application.properties." },
-  { term:"JwtAuthenticationFilter", full:"", cat:"security", badge:"Segurança", meaning:"Filtro Spring Security que interceta pedidos HTTP, extrai o token JWT do cabeçalho Authorization, valida-o com JwtUtil, e, se válido, carrega o utilizador da BD e coloca-o no SecurityContextHolder.", use:"O JwtAuthenticationFilter corre antes de qualquer controlador. Ignora as rotas /api/auth/** e /auth/**. Para os restantes pedidos, se o token for inválido, o filtro bloqueia com 401/403. Se válido, o utilizador fica disponível em todo o contexto da requisição." },
-  { term:"SecurityContextHolder", full:"", cat:"security", badge:"Segurança", meaning:"Classe do Spring Security que mantém o contexto de autenticação da thread actual (utilizando ThreadLocal). Contém um Authentication com os detalhes do utilizador autenticado.", use:"Após o JwtAuthenticationFilter validar o token, o objeto User é colocado no SecurityContextHolder. Os serviços podem obter o utilizador autenticado com SecurityContextHolder.getContext().getAuthentication().getPrincipal()." },
-  { term:"@PreUpdate", full:"", cat:"java", badge:"Java / Spring", meaning:"Callback JPA executado pelo Hibernate imediatamente antes de uma entidade ser actualizada (UPDATE). Permite actualizar campos como updatedAt automaticamente.", use:"Na entidade User, o método anotado com @PreUpdate define updatedAt = LocalDateTime.now() sempre que o utilizador é modificado. Assim, a data de última actualização é mantida sem código adicional nos serviços." },
-  { term:"@JsonIgnoreProperties", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação Jackson que especifica propriedades a ignorar durante a serialização/desserialização JSON. Usada para evitar erros de recursão ou exposição de campos internos do Hibernate.", use:"Nas entidades JPA, como User e Expense, adiciona-se @JsonIgnoreProperties({\"hibernateLazyInitializer\", \"handler\"}) para evitar que o Jackson tente serializar os proxies lazy do Hibernate, o que causaria excepções." },
-  { term:"FetchType", full:"", cat:"java", badge:"Java / Spring", meaning:"Enumeração JPA que define a estratégia de carregamento de relacionamentos. LAZY carrega o relacionamento apenas quando acedido (mais eficiente), EAGER carrega imediatamente com a entidade principal (mais simples mas potencialmente pesado).", use:"Na entidade Expense, a relação @ManyToOne(fetch = FetchType.LAZY) para User e Category garante que apenas as despesas são carregadas inicialmente, e os detalhes do utilizador/categoria só são obtidos quando necessários." },
-  { term:"@Enumerated", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação JPA que mapeia um enum Java para uma coluna da base de dados. EnumType.STRING guarda o nome do valor (ex: 'CREDIT'), EnumType.ORDINAL guarda a posição (0,1) — o primeiro é mais legível e seguro.", use:"No FinFlow, os campos CardType e CardBrand usam @Enumerated(EnumType.STRING) para que a BD guarde 'CREDIT', 'VISA', etc., em vez de números que poderiam desalinhar-se se o enum for reordenado." },
-  { term:"JpaRepository", full:"", cat:"db", badge:"Base de dados", meaning:"Interface do Spring Data JPA que estende PagingAndSortingRepository e fornece métodos CRUD prontos a usar (save, findById, findAll, delete, etc.) para uma entidade e o tipo da sua chave primária.", use:"Os repositórios do FinFlow (UserRepository, ExpenseRepository, IncomeRepository, etc.) estendem JpaRepository<Entidade, Long>. O Spring gera automaticamente a implementação em runtime, incluindo o SQL correspondente a cada método." },
+  { term:"mvnw / mvnw.cmd", full:"Maven Wrapper", cat:"java", badge:"Java / Spring", meaning:"Script que descarrega e executa a versão correcta do Maven sem necessidade de instalação global. Garante que todos os developers usam a mesma versão.", use:"O Railway usa ./mvnw clean package para compilar o FinFlow. O ficheiro mvnw está no repositório, permitindo builds consistentes em qualquer ambiente." },
+  { term:"RoundingMode", full:"", cat:"java", badge:"Java / Spring", meaning:"Enumeração do Java que define modos de arredondamento para operações com BigDecimal, como HALF_UP (arredondamento padrão: .5 para cima), DOWN, CEILING, etc. Essencial para cálculos financeiros com precisão.", use:"No DashboardService, a percentagem despesas/receitas é calculada com totalDespesas.divide(totalReceitas, 2, RoundingMode.HALF_UP) — arredonda para 2 casas decimais com o modo tradicional." },
   { term:"@RestController", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação Spring que marca uma classe como controlador REST. Combina @Controller e @ResponseBody: todos os métodos devolvem JSON (ou outro formato) em vez de views HTML.", use:"Todos os controladores do FinFlow (AuthController, ExpenseController, IncomeController, etc.) são anotados com @RestController. Cada método retorna um objeto Java que o Jackson serializa para JSON e envia como resposta HTTP." },
   { term:"@RequestMapping", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação Spring que mapeia um pedido HTTP a um método de controlador ou a toda a classe. Pode definir o caminho, o método HTTP, cabeçalhos, etc. Usada como base para as anotações específicas @GetMapping, @PostMapping, etc.", use:"No AuthController, a classe tem @RequestMapping(\"/api/auth\") e os métodos usam @PostMapping(\"/login\") e @PostMapping(\"/register\") — o caminho final é /api/auth/login e /api/auth/register." },
   { term:"@PathVariable", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação Spring que vincula uma variável do URL (ex: {id}) a um parâmetro do método do controlador. Extrai o valor da string e converte-o para o tipo do parâmetro (Long, String, etc.).", use:"No ExpenseController, o método updateExpense(@PathVariable Long id, @RequestBody ExpenseRequest request) recebe o id do URL /api/expenses/42 e o corpo JSON, e actualiza a despesa com esse ID." },
@@ -396,18 +431,16 @@ const terms = [
   { term:"@ExceptionHandler", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação Spring que marca um método de controlador para tratar excepções específicas lançadas em métodos da mesma classe (ou globalmente com @ControllerAdvice). Permite devolver respostas HTTP personalizadas.", use:"No AuthController, um método com @ExceptionHandler(RuntimeException.class) captura qualquer RuntimeException (ex: 'Email já existe') e devolve 401 com um JSON {error: mensagem}. Isso evita que o Spring devolva um 500 genérico." },
   { term:"@ResponseStatus", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação que define o código de status HTTP que deve ser devolvido quando uma excepção é lançada. Pode ser usada em classes de excepção personalizadas para associar um status fixo.", use:"A classe ResourceNotFoundException do FinFlow está anotada com @ResponseStatus(HttpStatus.NOT_FOUND). Quando o serviço lança esta excepção, o Spring automaticamente devolve HTTP 404 com a mensagem da excepção." },
   { term:"ResourceNotFoundException", full:"", cat:"java", badge:"Java / Spring", meaning:"Excepção personalizada que estende RuntimeException, usada para indicar que um recurso solicitado (despesa, receita, etc.) não foi encontrado na base de dados. Lançada nos serviços quando um findByIdAndUser devolve Optional.empty().", use:"No ExpenseService, se expenseRepository.findByIdAndUser(id, currentUser) devolver Optional.empty(), lança-se new ResourceNotFoundException(\"Despesa não encontrada\"). O controlador devolve 404 graças a @ResponseStatus." },
-  { term:"RoundingMode", full:"", cat:"java", badge:"Java / Spring", meaning:"Enumeração do Java que define modos de arredondamento para operações com BigDecimal, como HALF_UP (arredondamento padrão: .5 para cima), DOWN, CEILING, etc. Essencial para cálculos financeiros com precisão.", use:"No DashboardService, a percentagem despesas/receitas é calculada com totalDespesas.divide(totalReceitas, 2, RoundingMode.HALF_UP) — arredonda para 2 casas decimais com o modo tradicional." },
-  { term:"Postman", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Ferramenta gráfica para testar APIs REST. Permite criar pedidos HTTP (GET, POST, etc.) com cabeçalhos, corpo JSON, e guardar conjuntos de pedidos em coleções. Inclui scripts de teste e variáveis de ambiente.", use:"O FinFlow tem uma coleção Postman com todos os endpoints (Auth, Expenses, Incomes, Dashboard, etc.). O pedido de login guarda automaticamente o token numa variável de coleção, que é reutilizada nos pedidos seguintes com {{token}}." },
-  { term:"Health Check", full:"Endpoint de saúde", cat:"infra", badge:"Infra / Deploy", meaning:"Endpoint HTTP (ex: /api/health) que devolve o estado da aplicação e das suas dependências (BD, memória, uptime). Usado por ferramentas de monitorização e orquestradores para verificar se o serviço está vivo.", use:"O FinFlow tem um HealthController que responde a GET /api/health com JSON contendo status, versão, uptime e estado da BD (ligação testada). O Railway e o Postman usam este endpoint para confirmar que o deploy correu bem." },
-  { term:"@SpringBootApplication", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação que combina @Configuration, @EnableAutoConfiguration e @ComponentScan. É o ponto de entrada da aplicação Spring Boot.", use:"A classe FinflowBackendApplication.java está anotada com @SpringBootApplication. O método main() chama SpringApplication.run() para iniciar o contexto Spring e o servidor embutido." },
-  { term:"@ComponentScan", full:"", cat:"java", badge:"Java / Spring", meaning:"Instrui o Spring a varrer os pacotes especificados em busca de beans (@Service, @Controller, @Repository, etc.) e registá-los no IoC container.", use:"O @SpringBootApplication já inclui @ComponentScan implicitamente, escaneando o pacote raiz e subpacotes. Assim, todos os nossos componentes são detetados automaticamente." },
-  { term:"Injeção de Dependências (DI)", full:"Dependency Injection", cat:"java", badge:"Java / Spring", meaning:"Padrão de design onde o framework (Spring) cria e fornece as dependências de um objeto, em vez de o próprio objeto as instanciar com 'new'. Promove baixo acoplamento e facilita testes.", use:"Usamos @Autowired para injetar repositórios nos serviços (ex: @Autowired ExpenseRepository). O Spring cria as instâncias e injeta-as automaticamente, sem que precisemos de instanciar com new." },
-  { term:"IoC Container", full:"Inversion of Control Container", cat:"java", badge:"Java / Spring", meaning:"Contentor do Spring que gere o ciclo de vida dos beans (criação, configuração, e destruição). A inversão de controlo significa que o framework controla as instâncias, não o programador.", use:"O ApplicationContext, criado por SpringApplication.run(), é o IoC container do FinFlow. Todos os beans (JwtUtil, UserService, etc.) são geridos por este container." },
-  { term:"mvnw / mvnw.cmd", full:"Maven Wrapper", cat:"java", badge:"Java / Spring", meaning:"Script que descarrega e executa a versão correcta do Maven sem necessidade de instalação global. Garante que todos os developers usam a mesma versão.", use:"O Railway usa ./mvnw clean package para compilar o FinFlow. O ficheiro mvnw está no repositório, permitindo builds consistentes em qualquer ambiente." },
-  { term:"@JsonProperty(access = WRITE_ONLY)", full:"", cat:"java", badge:"Java / Spring", meaning:"Configuração do Jackson que indica que o campo deve ser aceite na desserialização (escrita) mas nunca incluído na serialização (leitura).", use:"No modelo User, o campo password está anotado com @JsonProperty(access = WRITE_ONLY). Assim, a password é aceite no registo/login, mas nunca aparece nas respostas JSON." },
-  { term:"@Column(updatable = false)", full:"", cat:"java", badge:"Java / Spring", meaning:"Configuração JPA que impede que uma coluna seja actualizada em operações UPDATE. Mantém o valor original após a criação.", use:"Todas as entidades usam @Column(updatable = false) no campo createdAt. Assim, a data de criação nunca é sobrescrita por engano." },
-  { term:"@JoinColumn", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação JPA que especifica a coluna de chave estrangeira numa relação entre entidades. Pode definir o nome da coluna, se é nullable, etc.", use:"Em Expense, a relação @ManyToOne @JoinColumn(name = \"user_id\") define que a coluna user_id na tabela expenses é a chave estrangeira para users.id." },
-  { term:"@GeneratedValue(strategy = IDENTITY)", full:"", cat:"java", badge:"Java / Spring", meaning:"Anotação JPA que define a estratégia de geração da chave primária. IDENTITY delega a geração para a base de dados (auto-incremento).", use:"Todas as entidades (User, Expense, Income, etc.) usam @GeneratedValue(strategy = GenerationType.IDENTITY) no campo id, fazendo com que o PostgreSQL gere o valor automaticamente com SERIAL." },
+  { term:"JUnit", full:"", cat:"java", badge:"Java / Spring", meaning:"Framework de testes unitários para Java. Permite escrever testes automatizados com anotações @Test, @BeforeEach, etc. Integrado com o Maven e o Spring Boot Test Starter.", use:"O FinFlow tem testes unitários planeados para os serviços (DashboardService, ExpenseService) usando JUnit 5. O spring-boot-starter-test inclui JUnit por defeito." },
+  { term:"Mockito", full:"", cat:"java", badge:"Java / Spring", meaning:"Framework para criar objetos simulados (mocks) em testes unitários. Permite isolar a unidade a testar, simulando dependências como repositórios.", use:"Em testes do FinFlow, usaríamos Mockito para simular ExpenseRepository e controlar os dados devolvidos, testando assim a lógica do ExpenseService sem aceder à BD real." },
+
+  // ---- BASE DE DADOS ----
+  { term:"PostgreSQL", full:"", cat:"db", badge:"Base de dados", meaning:"Sistema de gestão de base de dados relacional open-source, conhecido pela robustez, conformidade SQL, e suporte a tipos de dados avançados como TEXT sem limite, JSONB, e arrays.", use:"Base de dados de produção do FinFlow, alojada no Railway. Armazena as tabelas users, expenses, incomes, goals, categories, credit_cards. Acedida via JDBC com o driver postgresql no pom.xml." },
+  { term:"JDBC", full:"Java Database Connectivity", cat:"db", badge:"Base de dados", meaning:"API Java padrão para comunicação com bases de dados relacionais. Define interfaces como Connection, Statement, ResultSet. O driver específico de cada BD (ex: postgresql.jar) implementa estas interfaces.", use:"O HikariCP abre ligações JDBC ao PostgreSQL. O Hibernate usa JDBC internamente para executar as queries geradas. O spring.datasource.url configura o URL de ligação JDBC." },
+  { term:"HikariCP", full:"Hikari Connection Pool", cat:"db", badge:"Base de dados", meaning:"Pool de ligações JDBC de alto desempenho incluído por defeito no Spring Boot. Mantém um conjunto de ligações TCP abertas ao PostgreSQL e reutiliza-as, evitando o custo de estabelecer uma nova ligação para cada pedido HTTP.", use:"Configurado no application.properties: maximum-pool-size=5, initializationFailTimeout=-1 (aguarda indefinidamente pela BD no arranque — crítico para Railway onde a BD pode iniciar mais tarde que a app)." },
+  { term:"ddl-auto", full:"Data Definition Language — auto configuration", cat:"db", badge:"Base de dados", meaning:"Propriedade do Hibernate que controla o que acontece ao esquema da BD no arranque. 'update': adiciona colunas/tabelas que faltam, nunca apaga dados. 'validate': só verifica. 'create': recria tudo. 'none': não faz nada.", use:"O FinFlow usa ddl-auto=update. Permite evoluir as entidades (ex: adicionar campo bio ao User) sem SQL manual — o Hibernate emite ALTER TABLE automaticamente no próximo arranque." },
+  { term:"Flyway", full:"", cat:"db", badge:"Base de dados", meaning:"Ferramenta de migração de bases de dados baseada em scripts SQL versionados (V1__create_tables.sql, V2__add_column.sql). Regista que migrações já foram executadas e aplica apenas as novas.", use:"Não usado no FinFlow (usa ddl-auto=update em vez disso). Em produção empresarial, Flyway seria preferível — dá controlo total e histórico auditável de cada alteração ao esquema, com suporte a rollback." },
+  { term:"Rollback", full:"", cat:"db", badge:"Base de dados", meaning:"Operação que reverte todas as alterações feitas numa transacção de base de dados quando ocorre um erro. Garante que a BD não fica num estado parcialmente actualizado (inconsistente).", use:"Com @Transactional no Spring, se uma excepção for lançada durante uma operação que envolve múltiplos passos na BD, o Spring faz rollback automático de todas as alterações feitas nessa transacção." },
   { term:"SERIAL / BIGSERIAL", full:"", cat:"db", badge:"Base de dados", meaning:"Tipos de dados do PostgreSQL para chaves primárias auto-incrementadas. SERIAL usa INTEGER (até 2 mil milhões), BIGSERIAL usa BIGINT (até 9 quintilhões).", use:"O Hibernate mapeia @GeneratedValue(strategy = IDENTITY) para SERIAL no PostgreSQL. As tabelas do FinFlow usam BIGSERIAL (id BIGINT) para maior capacidade." },
   { term:"VARCHAR vs TEXT", full:"", cat:"db", badge:"Base de dados", meaning:"Tipos de texto no PostgreSQL. VARCHAR(n) limita o texto a n caracteres, enquanto TEXT não tem limite de tamanho (apenas o máximo da BD).", use:"O campo avatar_url foi alterado de VARCHAR(255) para TEXT para suportar URLs de imagens em Base64, que podem ter milhares de caracteres." },
   { term:"Constraint (Restrição)", full:"", cat:"db", badge:"Base de dados", meaning:"Regras aplicadas a colunas para garantir a integridade dos dados: NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY, CHECK, etc.", use:"No FinFlow, a tabela users tem UNIQUE em email, NOT NULL em vários campos, e FOREIGN KEY em todas as relações (ex: expenses.user_id referencia users.id)." },
@@ -415,6 +448,14 @@ const terms = [
   { term:"DML (Data Manipulation Language)", full:"", cat:"db", badge:"Base de dados", meaning:"Subconjunto do SQL para manipular dados: SELECT, INSERT, UPDATE, DELETE. O Hibernate gera DML automaticamente a partir das operações nos repositórios.", use:"O Hibernate gera INSERT para save(), UPDATE para modificações de entidades, DELETE para delete(), e SELECT para findById e métodos derivados." },
   { term:"ALTER TABLE", full:"", cat:"db", badge:"Base de dados", meaning:"Comando SQL para modificar a estrutura de uma tabela existente (adicionar, remover ou alterar colunas, constraints, etc.).", use:"Durante o projeto, usámos ALTER TABLE para remover a coluna due_date (obsoleta) e alterar avatar_url para TEXT." },
   { term:"DROP COLUMN", full:"", cat:"db", badge:"Base de dados", meaning:"Comando SQL que remove uma coluna de uma tabela. Pode ser irreversível se não houver backup.", use:"Removemos colunas obsoletas como client_id, invoice_number e due_date que estavam nas tabelas antigas, simplificando o esquema." },
+  { term:"JpaRepository", full:"", cat:"db", badge:"Base de dados", meaning:"Interface do Spring Data JPA que estende PagingAndSortingRepository e fornece métodos CRUD prontos a usar (save, findById, findAll, delete, etc.) para uma entidade e o tipo da sua chave primária.", use:"Os repositórios do FinFlow (UserRepository, ExpenseRepository, IncomeRepository, etc.) estendem JpaRepository<Entidade, Long>. O Spring gera automaticamente a implementação em runtime, incluindo o SQL correspondente a cada método." },
+
+  // ---- FRONTEND ----
+  { term:"Fetch API", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"API nativa dos browsers modernos para fazer pedidos HTTP de forma assíncrona com Promises. Substitui o XMLHttpRequest antigo com uma sintaxe mais limpa baseada em async/await.", use:"O api.js do FinFlow usa fetch() para todos os pedidos ao backend. Exemplo: fetch(url, {method:'POST', headers:{Authorization:'Bearer '+token}, body: JSON.stringify(data)})." },
+  { term:"LocalStorage", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Mecanismo de armazenamento de pares chave-valor no browser, persistente entre sessões (não se perde ao fechar o tab). Limitado a strings. Acessível apenas pelo domínio que o criou.", use:"O frontend web do FinFlow guarda o JWT em localStorage com as chaves 'token' e 'finflow_token'. O api.js lê estas chaves em cada pedido para montar o cabeçalho Authorization." },
+  { term:"Promise", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Objecto JavaScript que representa o resultado eventual de uma operação assíncrona. Pode estar pendente, resolvida (com valor), ou rejeitada (com erro). Encadeável com .then() e .catch(), ou com async/await.", use:"O fetch() devolve uma Promise. O despesas.js usa Promise.all([getIncomes(), getExpenses()]) para fazer os dois pedidos em paralelo — tempo total = o mais lento, não a soma dos dois." },
+  { term:"Chart.js", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Biblioteca JavaScript open-source para criar gráficos interactivos em HTML5 Canvas. Suporta linha, barra, pizza, doughnut, radar, entre outros. Carregada via CDN.", use:"O dashboard.js do FinFlow usa Chart.js para renderizar o gráfico de linha com dois datasets (Entradas / Saídas). O método canvas.toDataURL() exporta o gráfico como imagem PNG para o PDF." },
+  { term:"Base64", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Sistema de codificação que converte dados binários (como uma imagem) em texto ASCII. Aumenta o tamanho em ~33% mas permite incluir dados binários em contextos que só aceitam texto (JSON, CSS, HTML).", use:"As fotos de perfil do FinFlow são convertidas para base64 no browser com FileReader.readAsDataURL(). A string resultante é enviada como JSON e guardada no campo avatar_url (TEXT) do PostgreSQL." },
   { term:"async / await", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Sintaxe para lidar com Promises de forma síncrona e legível. async define uma função que devolve Promise; await pausa a execução até a Promise resolver.", use:"O api.js define async function apiRequest() e usa await fetch(...). Isso permite escrever código assíncrono como se fosse síncrono, facilitando a leitura e o tratamento de erros." },
   { term:"Promise.all()", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Método que recebe um array de Promises e aguarda que todas sejam resolvidas. Devolve um array com os resultados. Se uma falha, a Promise resultante é rejeitada.", use:"Em despesas.js, usamos Promise.all([getIncomes(), getExpenses()]) para carregar receitas e despesas em simultâneo. Isso reduz o tempo de espera total." },
   { term:"try / catch", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Bloco para capturar e tratar exceções. O código dentro do try é executado; se lançar uma exceção, o fluxo passa para o catch, onde pode ser tratada.", use:"Em api.js, envolvemos a chamada fetch com try/catch para lidar com erros de rede e respostas HTTP não-OK. A UI mostra uma mensagem de erro amigável." },
@@ -428,6 +469,14 @@ const terms = [
   { term:"toLocaleString()", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Método de números e datas que formata de acordo com a localidade do utilizador (ex: pt-PT para usar € e formato de data).", use:"Usado para formatar valores monetários em euros (amount.toLocaleString('pt-PT', {style:'currency', currency:'EUR'})) em todo o frontend." },
   { term:"CSS Flexbox", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Sistema de layout CSS que distribui elementos de forma flexível, alinhando e redimensionando automaticamente dentro de um container.", use:"Usado em toda a interface do FinFlow para criar grids, alinhar botões, centralizar conteúdo, e tornar o design responsivo." },
   { term:"CSS Media Queries", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Regras CSS que aplicam estilos diferentes consoante as características do dispositivo, como largura do ecrã, permitindo design responsivo.", use:"Usadas para adaptar o layout do frontend a telemóveis, tablets e desktops, ajustando tamanhos de fonte e disposição de elementos." },
+  { term:"Cypress", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Framework de testes End-to-End para aplicações web. Permite escrever testes que simulam ações do utilizador (cliques, preenchimento de formulários) e verificam o comportamento da UI.", use:"Planeado para testar fluxos completos no FinFlow, como registo, login, criação de despesas e visualização do dashboard, garantindo que a integração frontend-backend funciona." },
+
+  // ---- ANDROID ----
+  { term:"Retrofit", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Biblioteca Android/Kotlin para fazer pedidos HTTP de forma declarativa. Define uma interface com anotações (@GET, @POST, etc.) e o Retrofit gera a implementação em runtime que serializa/deserializa JSON automaticamente.", use:"O ApiService.kt do FinFlow é uma interface Retrofit com todos os endpoints (login, getExpenses, createIncome, etc.). O RetrofitClient.kt constrói o Retrofit com Gson e o interceptor de autenticação." },
+  { term:"OkHttp", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Biblioteca HTTP de baixo nível para Android/Java, usada pelo Retrofit internamente. Suporta interceptors — funções que correm antes de cada pedido e permitem adicionar cabeçalhos ou registar logs.", use:"No RetrofitClient.kt, um interceptor OkHttp lê o token do TokenManager e adiciona Authorization: Bearer <token> a todos os pedidos automaticamente, sem código adicional nas Activities." },
+  { term:"Corrotinas", full:"Kotlin Coroutines", cat:"android", badge:"Android / Kotlin", meaning:"Mecanismo do Kotlin para programação assíncrona sem callbacks. Funções marcadas com 'suspend' podem ser pausadas e retomadas sem bloquear a thread. 'launch {}' inicia uma corrotina.", use:"Todos os métodos do ApiService.kt são 'suspend fun'. As Activities chamam-nos dentro de 'coroutineScope.launch {}' para não bloquear a thread principal (UI thread) do Android." },
+  { term:"Jetpack Compose", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Framework moderno da Google para construir interfaces Android de forma declarativa em Kotlin. A UI é definida como funções @Composable que descrevem o estado visual, em vez de manipular views XML imperativament.", use:"Toda a UI do FinFlow Android (LoginActivity, MainActivity, formulários) é construída com Jetpack Compose. O tema escuro AMOLED é definido em Theme.kt com MaterialTheme e as cores em Color.kt." },
+  { term:"SharedPreferences", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Mecanismo de armazenamento local Android para pares chave-valor simples, persistente entre sessões. Privado à aplicação. Equivalente ao localStorage do browser, mas para Android.", use:"O TokenManager.kt do FinFlow usa SharedPreferences para guardar o JWT (saveToken/getToken), o nome do utilizador (saveUser/getUserName), e a foto de perfil (saveProfilePicture)." },
   { term:"@Composable", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Anotação que marca uma função Kotlin como definidora de UI no Jetpack Compose. O Compose recompõe a UI automaticamente quando o estado muda.", use:"Todos os ecrãs (LoginScreen, DashboardScreen, ExpensesScreen) e componentes (cards, formulários) do FinFlow Android são funções anotadas com @Composable." },
   { term:"LazyColumn", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Componente do Compose que exibe uma lista rolável, renderizando apenas os itens visíveis (virtualização). Eficiente para listas grandes.", use:"Usado para listar despesas, receitas, metas e cartões de crédito, garantindo boa performance mesmo com muitos dados." },
   { term:"Scaffold", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Estrutura base para ecrãs no Material Design, fornecendo slots para top bar, bottom bar, floating action button (FAB) e conteúdo.", use:"A MainActivity usa Scaffold para organizar a NavigationBar (barra inferior) e o conteúdo principal, com suporte a tema escuro." },
@@ -439,10 +488,18 @@ const terms = [
   { term:"Intents", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Mecanismo Android para comunicar entre componentes (Activities, Services). Pode iniciar uma nova Activity e passar dados (extras).", use:"Usado para abrir AddExpenseActivity a partir da MainActivity, passando o tipo (despesa/receita) como extra." },
   { term:"onResume()", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Método do ciclo de vida da Activity chamado quando ela se torna visível. Usado para atualizar dados sempre que o utilizador regressa.", use:"Na MainActivity, sobrescrevemos onResume() para recarregar o dashboard e as listas, garantindo que estão actualizados." },
   { term:"Logcat", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Ferramenta do Android Studio que exibe logs da aplicação. Usada para debugging, com níveis VERBOSE, DEBUG, INFO, WARN, ERROR.", use:"O HttpLoggingInterceptor do OkHttp regista todos os pedidos e respostas no Logcat, facilitando o diagnóstico de problemas de comunicação com a API." },
-  { term:"OWASP", full:"Open Web Application Security Project", cat:"security", badge:"Segurança", meaning:"Organização sem fins lucrativos que publica as melhores práticas e os principais riscos de segurança para aplicações web (OWASP Top 10).", use:"Seguimos as recomendações OWASP para JWT (armazenamento seguro, assinatura HMAC), BCrypt para passwords, desativação de CSRF em APIs stateless, e configuração correta de CORS." },
-  { term:"Rainbow Table", full:"", cat:"security", badge:"Segurança", meaning:"Tabela pré-calculada de hashes usada para reverter hashes de passwords rapidamente. A eficácia é reduzida com o uso de salt.", use:"O BCrypt gera um salt aleatório para cada password, tornando as rainbow tables inúteis — mesmo que dois utilizadores tenham a mesma password, os hashes armazenados são completamente diferentes." },
-  { term:"Brute Force", full:"", cat:"security", badge:"Segurança", meaning:"Ataque que tenta todas as combinações possíveis de password até encontrar a correta. A lentidão do BCrypt (deliberadamente lento) dificulta este ataque.", use:"O BCrypt é configurado com um fator de custo (ex: 10) que torna cada tentativa de hash demorada (≈0.1s). Isto, combinado com rate limiting (sugerido), protege o FinFlow contra ataques de força bruta." },
-  { term:"Enumeração de Utilizadores", full:"", cat:"security", badge:"Segurança", meaning:"Técnica para descobrir se um email está registado com base na resposta do servidor (ex: mensagens diferentes para 'email não encontrado' vs 'password incorreta').", use:"No FinFlow, o endpoint de recuperação de password (não implementado) deveria devolver sempre a mesma mensagem genérica para evitar que um atacante possa enumerar utilizadores válidos." },
+  { term:"Espresso", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Framework de testes de UI para Android, permitindo escrever testes que interagem com a UI e verificam comportamentos.", use:"Planeado para testar a interface do FinFlow Android, como login, navegação e criação de transações." },
+
+  // ---- INFRA / DEPLOY ----
+  { term:"Railway", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Plataforma de cloud (PaaS — Platform as a Service) que automatiza o deploy de aplicações a partir de um repositório Git. Detecta a linguagem/framework, constrói o artefacto, e executa em containers.", use:"O backend FinFlow e a base de dados PostgreSQL estão ambos alojados no Railway. A cada git push, o Railway reconstrói o JAR com ./mvnw package e relança a aplicação automaticamente." },
+  { term:"Deploy", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Processo de disponibilizar uma nova versão de uma aplicação no ambiente de produção. Pode ser manual (copiar ficheiros) ou automático (CI/CD integrado com Git, como no Railway).", use:"No FinFlow, o deploy é automático: git push → Railway detecta a mudança → mvn package → java -jar → nova versão disponível no URL de produção em poucos minutos." },
+  { term:"Variável de ambiente", full:"Environment variable", cat:"infra", badge:"Infra / Deploy", meaning:"Variável do sistema operativo acessível à aplicação em runtime. Usada para configuração sensível (credenciais, segredos) que não deve entrar no repositório Git.", use:"DATABASE_URL, JWT_SECRET, PORT são variáveis de ambiente configuradas no dashboard do Railway. O application.properties lê-as com ${DATABASE_URL:valor_padrão} — produção usa a variável, desenvolvimento local usa o padrão." },
+  { term:"application.properties", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Ficheiro de configuração da aplicação Spring Boot, localizado em src/main/resources. Define propriedades como URL da BD, credenciais, segredo JWT, e comportamentos do Hibernate/HikariCP.", use:"O FinFlow usa application.properties para configurar a ligação à BD (DATABASE_URL), o ddl-auto=update, o pool HikariCP, e o jwt.secret. Em produção, estas propriedades são sobrepostas por variáveis de ambiente." },
+  { term:"application.properties.example", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Ficheiro de exemplo que documenta as variáveis de ambiente necessárias sem expor valores reais. Deve ser versionado no Git para referência dos developers.", use:"Incluído no repositório FinFlow para que qualquer developer saiba quais variáveis configurar (DATABASE_URL, JWT_SECRET, etc.) antes de executar localmente." },
+  { term:"CDN", full:"Content Delivery Network", cat:"infra", badge:"Infra / Deploy", meaning:"Rede de servidores distribuídos geograficamente que serve ficheiros estáticos (JS, CSS, imagens) ao utilizador a partir do servidor mais próximo, reduzindo a latência.", use:"O frontend FinFlow carrega Chart.js e html2pdf.js via CDN (cdnjs.cloudflare.com) nas tags <script> do HTML, em vez de os incluir no repositório." },
+  { term:"CORS preflight", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Pedido OPTIONS automático que o browser envia antes de um pedido 'não simples' (com cabeçalho Authorization ou Content-Type: application/json) para verificar se o servidor autoriza a origem. Se o servidor não responder correctamente, o browser cancela o pedido real.", use:"No FinFlow, houve um problema de CORS com filtro duplicado — os cabeçalhos Access-Control-Allow-Origin apareciam duas vezes. Resolvido centralizando toda a configuração no corsConfigurationSource() do SecurityConfig." },
+  { term:"Postman", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Ferramenta gráfica para testar APIs REST. Permite criar pedidos HTTP (GET, POST, etc.) com cabeçalhos, corpo JSON, e guardar conjuntos de pedidos em coleções. Inclui scripts de teste e variáveis de ambiente.", use:"O FinFlow tem uma coleção Postman com todos os endpoints (Auth, Expenses, Incomes, Dashboard, etc.). O pedido de login guarda automaticamente o token numa variável de coleção, que é reutilizada nos pedidos seguintes com {{token}}." },
+  { term:"Health Check", full:"Endpoint de saúde", cat:"infra", badge:"Infra / Deploy", meaning:"Endpoint HTTP (ex: /api/health) que devolve o estado da aplicação e das suas dependências (BD, memória, uptime). Usado por ferramentas de monitorização e orquestradores para verificar se o serviço está vivo.", use:"O FinFlow tem um HealthController que responde a GET /api/health com JSON contendo status, versão, uptime e estado da BD (ligação testada). O Railway e o Postman usam este endpoint para confirmar que o deploy correu bem." },
   { term:"CI/CD", full:"Continuous Integration / Continuous Deployment", cat:"infra", badge:"Infra / Deploy", meaning:"Práticas que automatizam a integração de código (testes) e o deploy para produção. O CI executa testes a cada commit; o CD faz deploy automático se os testes passam.", use:"O Railway fornece CD automático a partir do Git. Cada push desencadeia build e deploy, aproximando-nos de um pipeline CI/CD completo (faltam os testes automatizados)." },
   { term:"Webhook", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Callback HTTP acionado por eventos (ex: push no Git). O serviço que recebe o webhook pode reagir (ex: iniciar build/deploy).", use:"O Railway utiliza webhooks para detetar alterações no repositório GitHub e iniciar o deploy automaticamente." },
   { term:"Load Balancer", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Dispositivo ou serviço que distribui o tráfego de entrada entre várias instâncias de uma aplicação, aumentando a disponibilidade e capacidade.", use:"Não implementado no FinFlow (apenas uma instância), mas seria necessário em produção com múltiplas réplicas para escalabilidade." },
@@ -453,10 +510,6 @@ const terms = [
   { term:"OpenAPI / Swagger", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Especificação para descrever APIs REST de forma legível por humanos e máquinas, permitindo gerar documentação interativa e clientes SDK.", use:"Sugerido como melhoria futura para o FinFlow, o que facilitaria a exploração e teste dos endpoints por outros developers." },
   { term:"Rate Limiting", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Técnica que limita o número de pedidos que um cliente pode fazer num intervalo de tempo, protegendo contra sobrecarga e ataques de força bruta.", use:"Sugerido como melhoria de segurança para o FinFlow, especialmente no endpoint de login, para prevenir ataques de força bruta." },
   { term:"Refresh Token", full:"", cat:"infra", badge:"Infra / Deploy", meaning:"Token de longa duração usado para obter novos access tokens sem obrigar o utilizador a reinserir as credenciais. Melhora a experiência e segurança.", use:"Não implementado no FinFlow; o JWT atual expira em 24h. Como melhoria, poderíamos adicionar refresh tokens para evitar logins frequentes." },
-  { term:"JUnit", full:"", cat:"java", badge:"Java / Spring", meaning:"Framework de testes unitários para Java. Permite escrever testes automatizados com anotações @Test, @BeforeEach, etc. Integrado com o Maven e o Spring Boot Test Starter.", use:"O FinFlow tem testes unitários planeados para os serviços (DashboardService, ExpenseService) usando JUnit 5. O spring-boot-starter-test inclui JUnit por defeito." },
-  { term:"Mockito", full:"", cat:"java", badge:"Java / Spring", meaning:"Framework para criar objetos simulados (mocks) em testes unitários. Permite isolar a unidade a testar, simulando dependências como repositórios.", use:"Em testes do FinFlow, usaríamos Mockito para simular ExpenseRepository e controlar os dados devolvidos, testando assim a lógica do ExpenseService sem aceder à BD real." },
-  { term:"Cypress", full:"", cat:"frontend", badge:"Frontend / JS", meaning:"Framework de testes End-to-End para aplicações web. Permite escrever testes que simulam ações do utilizador (cliques, preenchimento de formulários) e verificam o comportamento da UI.", use:"Planeado para testar fluxos completos no FinFlow, como registo, login, criação de despesas e visualização do dashboard, garantindo que a integração frontend-backend funciona." },
-  { term:"Espresso", full:"", cat:"android", badge:"Android / Kotlin", meaning:"Framework de testes de UI para Android, permitindo escrever testes que interagem com a UI e verificam comportamentos.", use:"Planeado para testar a interface do FinFlow Android, como login, navegação e criação de transações." }
 ];
 
 // ===== LÓGICA DE RENDERIZAÇÃO =====
@@ -481,7 +534,7 @@ function renderDict() {
       </div>
       ${t.full ? `<div class="dict-full">${t.full}</div>` : ''}
       <div class="dict-meaning">${t.meaning}</div>
-      <div class="dict-use"><strong style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">No FinFlow:</strong> ${t.use}</div>
+      <div class="dict-use"><strong>No FinFlow:</strong> ${t.use}</div>
     </div>
   `).join('');
 }
