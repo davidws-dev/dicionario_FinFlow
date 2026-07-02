@@ -227,7 +227,7 @@
 
 <div class="quiz-wrap" id="app">
   <h1>🧠 Quiz FinFlow</h1>
-  <div class="subtitle">Testa os teus conhecimentos sobre os termos técnicos do projeto</div>
+  <div class="subtitle">+100 perguntas para testar os teus conhecimentos sobre o projeto</div>
 
   <!-- Filtros -->
   <div class="filter-bar" id="filterBar">
@@ -239,6 +239,7 @@
     <button class="filter-btn" data-topic="frontend">Frontend</button>
     <button class="filter-btn" data-topic="android">Android</button>
     <button class="filter-btn" data-topic="infra">Infra</button>
+    <button class="filter-btn" data-topic="arquitetura">Arquitetura</button>
   </div>
 
   <!-- Área de jogo -->
@@ -259,7 +260,7 @@
     </div>
   </div>
 
-  <!-- Resultado (oculto) -->
+  <!-- Resultado -->
   <div id="resultArea" style="display:none;" class="result">
     <div class="score" id="finalScore">0%</div>
     <div class="detail" id="finalDetail"></div>
@@ -270,10 +271,10 @@
 
 <script>
 // ============================================================
-//  PERGUNTAS – baseadas no dicionário FinFlow
+//  PERGUNTAS – 112 perguntas sobre o FinFlow
 // ============================================================
 const questions = [
-  // ---------- PROTOCOLO ----------
+  // ========== PROTOCOLO / WEB (16 perguntas) ==========
   {
     topic: 'protocol',
     question: 'O que significa a sigla REST?',
@@ -308,8 +309,172 @@ const questions = [
     explanation: 'JSON (JavaScript Object Notation) é um formato leve de intercâmbio de dados, amplamente usado em APIs REST.',
     tip: 'JSON é baseado em pares chave-valor e suporta arrays, números, strings e booleanos.'
   },
+  {
+    topic: 'protocol',
+    question: 'Qual o papel do cabeçalho HTTP "Authorization" no FinFlow?',
+    options: [
+      'Indica o tipo de conteúdo enviado',
+      'Transporta o token JWT para autenticação',
+      'Define a política de cache',
+      'Especifica a origem do pedido'
+    ],
+    correct: 1,
+    explanation: 'O cabeçalho Authorization é usado para enviar o token JWT no formato "Bearer <token>", autenticando o utilizador.',
+    tip: 'Sem este cabeçalho, o servidor devolve 401 Unauthorized.'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que significa o código HTTP 201 Created?',
+    options: [
+      'O pedido foi recebido mas ainda não processado',
+      'O recurso foi criado com sucesso',
+      'O recurso foi atualizado',
+      'O recurso foi eliminado'
+    ],
+    correct: 1,
+    explanation: 'HTTP 201 é devolvido após um POST bem-sucedido, indicando que o recurso foi criado e geralmente inclui o ID do novo recurso.',
+    tip: 'O FinFlow devolve 201 no POST /api/expenses e POST /api/incomes.'
+  },
+  {
+    topic: 'protocol',
+    question: 'Qual a diferença entre PUT e POST?',
+    options: [
+      'PUT é para criar, POST para atualizar',
+      'PUT é idempotente, POST não é',
+      'PUT não tem corpo, POST tem',
+      'PUT é mais rápido que POST'
+    ],
+    correct: 1,
+    explanation: 'PUT é idempotente: atualiza ou cria um recurso num URL específico. POST não é idempotente e é usado para criação genérica.',
+    tip: 'No FinFlow, usamos PUT para atualizar recursos existentes (ex: /api/incomes/{id}).'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que é o CORS e por que é configurado no FinFlow?',
+    options: [
+      'É um protocolo de segurança que impede acesso a recursos de outros domínios sem permissão',
+      'É uma ferramenta de logging',
+      'É um sistema de cache',
+      'É um formato de dados'
+    ],
+    correct: 0,
+    explanation: 'CORS (Cross-Origin Resource Sharing) é um mecanismo de segurança do browser que restringe pedidos a domínios diferentes. No FinFlow, configuramos CORS para permitir que o frontend web (hospedado noutro domínio) aceda à API.',
+    tip: 'A app Android não sofre de CORS porque não é um browser.'
+  },
+  {
+    topic: 'protocol',
+    question: 'Para que serve o verbo OPTIONS no FinFlow?',
+    options: [
+      'Para obter informações do servidor',
+      'Para fazer o preflight CORS antes de pedidos complexos',
+      'Para eliminar recursos',
+      'Para autenticar o utilizador'
+    ],
+    correct: 1,
+    explanation: 'O browser envia OPTIONS automaticamente antes de pedidos com cabeçalhos como Authorization, para verificar se o servidor aceita a origem. No FinFlow, permitimos OPTIONS para todas as rotas.',
+    tip: 'Sem OPTIONS permitido, o CORS bloquearia os pedidos.'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que é o URL base do backend FinFlow em produção?',
+    options: [
+      'http://localhost:8080',
+      'https://finflow-backend-production-5d94.up.railway.app',
+      'https://finflow-backend.herokuapp.com',
+      'https://api.finflow.com'
+    ],
+    correct: 1,
+    explanation: 'O backend está hospedado no Railway no URL: https://finflow-backend-production-5d94.up.railway.app',
+    tip: 'Este URL é usado por todos os clientes (frontend web e Android).'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que significa "stateless" no contexto da API FinFlow?',
+    options: [
+      'O servidor mantém sessões para cada utilizador',
+      'O servidor não guarda estado entre pedidos; cada pedido contém toda a informação necessária',
+      'A aplicação não usa base de dados',
+      'Os tokens são guardados no servidor'
+    ],
+    correct: 1,
+    explanation: 'Stateless significa que o servidor não mantém sessões. Cada pedido é independente e contém o token JWT para autenticação.',
+    tip: 'Isto permite escalar horizontalmente sem partilha de estado entre instâncias.'
+  },
+  {
+    topic: 'protocol',
+    question: 'Qual a diferença entre HTTP e HTTPS?',
+    options: [
+      'HTTPS é mais rápido',
+      'HTTPS adiciona encriptação TLS/SSL aos dados transmitidos',
+      'HTTP é mais seguro',
+      'Não há diferença'
+    ],
+    correct: 1,
+    explanation: 'HTTPS é HTTP com uma camada de encriptação TLS/SSL, garantindo que os dados não são lidos por terceiros.',
+    tip: 'O Railway fornece SSL automaticamente para todos os subdomínios.'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que é um header HTTP?',
+    options: [
+      'O corpo da mensagem',
+      'Metadados enviados com o pedido ou resposta',
+      'O URL do recurso',
+      'O método HTTP'
+    ],
+    correct: 1,
+    explanation: 'Headers são pares chave-valor que transportam metadados como Content-Type, Authorization, Cache-Control, etc.',
+    tip: 'No FinFlow, usamos Content-Type: application/json e Authorization: Bearer.'
+  },
+  {
+    topic: 'protocol',
+    question: 'Para que serve o endpoint /api/health no FinFlow?',
+    options: [
+      'Para autenticar utilizadores',
+      'Para verificar o estado da aplicação e da base de dados',
+      'Para listar todas as despesas',
+      'Para atualizar o perfil'
+    ],
+    correct: 1,
+    explanation: 'O health check é usado para monitorização, devolvendo status, uptime e estado da ligação à BD.',
+    tip: 'É um endpoint público, sem autenticação.'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que significa o código HTTP 404?',
+    options: [
+      'Recurso não encontrado',
+      'Erro interno do servidor',
+      'Pedido não autorizado',
+      'Conflito'
+    ],
+    correct: 0,
+    explanation: '404 Not Found indica que o recurso solicitado não existe no servidor. No FinFlow, é devolvido quando um ID não é encontrado.',
+    tip: 'A exceção ResourceNotFoundException no FinFlow devolve 404 automaticamente.'
+  },
+  {
+    topic: 'protocol',
+    question: 'Qual o formato dos dados trocados entre o cliente e o servidor FinFlow?',
+    options: ['XML', 'JSON', 'YAML', 'HTML'],
+    correct: 1,
+    explanation: 'Todos os dados são trocados em JSON, que é leve e amplamente suportado.',
+    tip: 'O Jackson no backend e o Gson no Android fazem a serialização automática.'
+  },
+  {
+    topic: 'protocol',
+    question: 'O que é o TCP e como se relaciona com HTTP?',
+    options: [
+      'TCP é um protocolo de aplicação; HTTP é de transporte',
+      'HTTP é construído sobre TCP, que garante entrega fiável dos pacotes',
+      'São protocolos concorrentes',
+      'TCP é mais recente que HTTP'
+    ],
+    correct: 1,
+    explanation: 'TCP é o protocolo de transporte que garante que os dados chegam intactos e na ordem correta. HTTP é o protocolo de aplicação que define a estrutura das mensagens.',
+    tip: 'O HikariCP mantém ligações TCP abertas para a BD.'
+  },
 
-  // ---------- SEGURANÇA ----------
+  // ========== SEGURANÇA (16 perguntas) ==========
   {
     topic: 'security',
     question: 'Qual a principal característica do JWT?',
@@ -321,7 +486,7 @@ const questions = [
     ],
     correct: 1,
     explanation: 'JWT é stateless: toda a informação necessária está no token, assinado para evitar adulteração.',
-    tip: 'O JWT tem três partes: header, payload e signature. A assinatura garante integridade.'
+    tip: 'O JWT tem três partes: header, payload e signature.'
   },
   {
     topic: 'security',
@@ -334,7 +499,7 @@ const questions = [
     ],
     correct: 1,
     explanation: 'BCrypt é lento para dificultar ataques de força bruta e usa salt aleatório para cada password.',
-    tip: 'O salt impede que duas passwords iguais tenham o mesmo hash, derrotando rainbow tables.'
+    tip: 'O salt impede que duas passwords iguais tenham o mesmo hash.'
   },
   {
     topic: 'security',
@@ -349,8 +514,177 @@ const questions = [
     explanation: 'Em APIs stateless com JWT (sem cookies de sessão), a proteção CSRF não é necessária e pode ser desativada.',
     tip: 'CSRF é relevante quando usamos cookies de sessão. Com JWT no header, estamos seguros.'
   },
+  {
+    topic: 'security',
+    question: 'O que é o SecurityContextHolder no Spring Security?',
+    options: [
+      'Um repositório de dados',
+      'Um contentor que guarda a autenticação da thread atual',
+      'Um filtro HTTP',
+      'Uma anotação'
+    ],
+    correct: 1,
+    explanation: 'SecurityContextHolder é uma classe que mantém o contexto de segurança (Authentication) da thread atual, usando ThreadLocal.',
+    tip: 'Após o JwtAuthenticationFilter validar o token, o utilizador é colocado aqui.'
+  },
+  {
+    topic: 'security',
+    question: 'O que é um "salt" em criptografia?',
+    options: [
+      'Uma chave secreta',
+      'Um valor aleatório adicionado ao hash para evitar rainbow tables',
+      'Um algoritmo de encriptação',
+      'Um tipo de token'
+    ],
+    correct: 1,
+    explanation: 'Salt é um valor aleatório único por utilizador que é combinado com a password antes de fazer o hash, garantindo que hashes de passwords iguais são diferentes.',
+    tip: 'O BCrypt gera salt automaticamente e armazena-o no hash.'
+  },
+  {
+    topic: 'security',
+    question: 'O que significa "Bearer" no cabeçalho Authorization?',
+    options: [
+      'O tipo de token (portador)',
+      'O nome do utilizador',
+      'A data de expiração',
+      'O algoritmo de assinatura'
+    ],
+    correct: 0,
+    explanation: '"Bearer" indica que o token deve ser apresentado pelo portador (quem o possui). É a convenção padrão para JWT.',
+    tip: 'O formato é: Authorization: Bearer <token>.'
+  },
+  {
+    topic: 'security',
+    question: 'O que é o JwtUtil no FinFlow?',
+    options: [
+      'Um controlador REST',
+      'Uma classe utilitária para gerar e validar tokens JWT',
+      'Um repositório de tokens',
+      'Um serviço de autenticação'
+    ],
+    correct: 1,
+    explanation: 'JwtUtil é a classe que contém a lógica de geração, validação e extração de informação dos tokens JWT.',
+    tip: 'Usa a biblioteca JJWT e o segredo do application.properties.'
+  },
+  {
+    topic: 'security',
+    question: 'O que acontece se o token JWT expirar?',
+    options: [
+      'O servidor renova automaticamente',
+      'O utilizador tem de fazer login novamente',
+      'O token é armazenado na BD',
+      'O servidor ignora a expiração'
+    ],
+    correct: 1,
+    explanation: 'Se o token expirar, o servidor devolve 401 Unauthorized e o cliente deve redirecionar para o login.',
+    tip: 'O JWT do FinFlow tem validade de 24 horas.'
+  },
+  {
+    topic: 'security',
+    question: 'Qual a função do JwtAuthenticationFilter?',
+    options: [
+      'Gerar tokens JWT',
+      'Interceptar pedidos, validar o token e carregar o utilizador no contexto de segurança',
+      'Encriptar passwords',
+      'Configurar o CORS'
+    ],
+    correct: 1,
+    explanation: 'O filtro lê o token do header, valida-o com JwtUtil e, se válido, carrega o User da BD e coloca-o no SecurityContextHolder.',
+    tip: 'O filtro ignora as rotas /api/auth/** porque não precisam de token.'
+  },
+  {
+    topic: 'security',
+    question: 'O que é a política STATELESS no SecurityConfig?',
+    options: [
+      'Cria uma sessão para cada utilizador',
+      'Diz ao Spring para não criar sessões HTTP',
+      'Ativa a autenticação básica',
+      'Desativa a segurança'
+    ],
+    correct: 1,
+    explanation: 'STATELESS indica que o servidor não deve criar sessões. Cada pedido é independente e traz o seu próprio token.',
+    tip: 'Essencial para APIs REST escaláveis.'
+  },
+  {
+    topic: 'security',
+    question: 'O que é o BCryptPasswordEncoder no Spring?',
+    options: [
+      'Um gerador de tokens',
+      'Um codificador de passwords que usa BCrypt',
+      'Um validador de emails',
+      'Um filtro de segurança'
+    ],
+    correct: 1,
+    explanation: 'BCryptPasswordEncoder é a implementação do BCrypt fornecida pelo Spring Security, usada para codificar e verificar passwords.',
+    tip: 'É injectado como bean no SecurityConfig.'
+  },
+  {
+    topic: 'security',
+    question: 'O que é uma rainbow table?',
+    options: [
+      'Uma tabela de rotas',
+      'Uma tabela pré-calculada de hashes para reverter passwords',
+      'Um tipo de base de dados',
+      'Um ficheiro de configuração'
+    ],
+    correct: 1,
+    explanation: 'Rainbow tables são usadas para ataques de reversão de hash. O uso de salt torna-as ineficazes.',
+    tip: 'O BCrypt com salt protege contra este ataque.'
+  },
+  {
+    topic: 'security',
+    question: 'O que significa a sigla OWASP?',
+    options: [
+      'Open Web Application Security Project',
+      'Online Web Application Security Protocol',
+      'Open Web Authentication Security Project',
+      'Online Web Application Safety Project'
+    ],
+    correct: 0,
+    explanation: 'OWASP é uma organização que publica boas práticas e os principais riscos de segurança para aplicações web.',
+    tip: 'Seguimos recomendações OWASP para JWT, BCrypt e CORS.'
+  },
+  {
+    topic: 'security',
+    question: 'O que é a enumeração de utilizadores?',
+    options: [
+      'Uma técnica para listar todos os utilizadores',
+      'Uma técnica para descobrir se um email está registado com base na resposta do servidor',
+      'Uma função da base de dados',
+      'Uma ferramenta de logging'
+    ],
+    correct: 1,
+    explanation: 'A enumeração de utilizadores ocorre quando o servidor devolve respostas diferentes para emails existentes e inexistentes, permitindo ao atacante descobrir utilizadores.',
+    tip: 'No FinFlow, o endpoint de recuperação de password (não implementado) deve devolver sempre a mesma mensagem.'
+  },
+  {
+    topic: 'security',
+    question: 'Por que o FinFlow usa JWT em vez de sessões baseadas em cookies?',
+    options: [
+      'É mais simples de implementar',
+      'Permite stateless, escalabilidade e funciona com múltiplos clientes (web, Android)',
+      'É mais seguro',
+      'É mais rápido'
+    ],
+    correct: 1,
+    explanation: 'JWT permite uma arquitetura stateless, ideal para APIs REST que servem vários tipos de clientes (browser, mobile) sem necessidade de sessões no servidor.',
+    tip: 'Facilita o deploy em múltiplas instâncias sem partilha de estado.'
+  },
+  {
+    topic: 'security',
+    question: 'O que acontece se o token JWT for adulterado?',
+    options: [
+      'O servidor corrige automaticamente',
+      'A assinatura falha e o token é rejeitado',
+      'O token é aceite mesmo assim',
+      'O servidor ignora a assinatura'
+    ],
+    correct: 1,
+    explanation: 'A assinatura HMAC do JWT garante a integridade. Se o token for alterado, a assinatura não corresponde e o servidor rejeita o token.',
+    tip: 'O JwtUtil.validateToken() devolve false se a assinatura for inválida.'
+  },
 
-  // ---------- JAVA / SPRING ----------
+  // ========== JAVA / SPRING (20 perguntas) ==========
   {
     topic: 'java',
     question: 'O que é um Bean no Spring?',
@@ -362,7 +696,7 @@ const questions = [
     ],
     correct: 1,
     explanation: 'Beans são objetos instanciados, configurados e geridos pelo container Spring (ApplicationContext).',
-    tip: 'Beans podem ser criados com @Component, @Service, @Repository ou @Bean em classes de configuração.'
+    tip: 'Beans podem ser criados com @Component, @Service, @Repository ou @Bean.'
   },
   {
     topic: 'java',
@@ -370,7 +704,7 @@ const questions = [
     options: ['@Transactional', '@PrePersist', '@Autowired', '@PostConstruct'],
     correct: 0,
     explanation: '@Transactional garante que as operações de BD num método sejam atómicas (rollback em caso de erro).',
-    tip: 'Pode usar readOnly=true para transações apenas de leitura, otimizando a performance.'
+    tip: 'Pode usar readOnly=true para transações apenas de leitura.'
   },
   {
     topic: 'java',
@@ -385,8 +719,229 @@ const questions = [
     explanation: 'DTOs (Data Transfer Objects) servem para desacoplar a estrutura interna da entidade da API pública, evitando expor campos sensíveis.',
     tip: 'Use DTOs para receber e devolver dados nos controladores, nunca as entidades diretamente.'
   },
+  {
+    topic: 'java',
+    question: 'O que faz a anotação @SpringBootApplication?',
+    options: [
+      'Combina @Configuration, @EnableAutoConfiguration e @ComponentScan',
+      'Apenas define a classe principal',
+      'Configura a base de dados',
+      'Ativa o modo debug'
+    ],
+    correct: 0,
+    explanation: '@SpringBootApplication é uma anotação composta que configura automaticamente o Spring Boot, ativa o scan de componentes e a configuração automática.',
+    tip: 'É o ponto de entrada da aplicação Spring Boot.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o @Autowired?',
+    options: [
+      'Uma anotação para definir uma rota HTTP',
+      'Uma anotação para injetar dependências automaticamente',
+      'Uma anotação para transações',
+      'Uma anotação para entidades JPA'
+    ],
+    correct: 1,
+    explanation: '@Autowired é usado para injetar beans geridos pelo Spring, como repositórios nos serviços.',
+    tip: 'Elimina a necessidade de instanciar objetos com new.'
+  },
+  {
+    topic: 'java',
+    question: 'Qual a função do @RestController?',
+    options: [
+      'Define uma classe como controlador REST, devolvendo JSON em vez de views HTML',
+      'Configura a segurança',
+      'Define uma entidade JPA',
+      'Cria um bean'
+    ],
+    correct: 0,
+    explanation: '@RestController é a combinação de @Controller e @ResponseBody, indicando que os métodos devolvem JSON diretamente.',
+    tip: 'Todos os controladores do FinFlow usam @RestController.'
+  },
+  {
+    topic: 'java',
+    question: 'Para que serve o @RequestMapping?',
+    options: [
+      'Mapeia um pedido HTTP a um método de controlador',
+      'Define uma relação entre entidades',
+      'Cria uma transação',
+      'Configura a base de dados'
+    ],
+    correct: 0,
+    explanation: '@RequestMapping define o caminho URL e/ou método HTTP para um controlador ou método.',
+    tip: 'No FinFlow, usamos @RequestMapping("/api/auth") na classe AuthController.'
+  },
+  {
+    topic: 'java',
+    question: 'O que faz @PathVariable?',
+    options: [
+      'Lê o corpo do pedido',
+      'Extrai uma variável do URL (ex: /incomes/{id})',
+      'Define uma coluna da BD',
+      'Configura uma injeção'
+    ],
+    correct: 1,
+    explanation: '@PathVariable vincula o valor de um placeholder no URL ao parâmetro do método.',
+    tip: 'Ex: @GetMapping("/incomes/{id}") public Income getById(@PathVariable Long id)'
+  },
+  {
+    topic: 'java',
+    question: 'O que faz @RequestBody?',
+    options: [
+      'Extrai uma variável do URL',
+      'Lê o corpo JSON do pedido e converte para um objeto Java',
+      'Define um cabeçalho HTTP',
+      'Configura uma exceção'
+    ],
+    correct: 1,
+    explanation: '@RequestBody desserializa o corpo do pedido (JSON) para um objeto Java usando Jackson.',
+    tip: 'Usado em POST e PUT para receber dados do cliente.'
+  },
+  {
+    topic: 'java',
+    question: 'Para que serve o @ExceptionHandler no FinFlow?',
+    options: [
+      'Para tratar exceções lançadas pelos controladores e devolver respostas HTTP personalizadas',
+      'Para criar novas exceções',
+      'Para logging',
+      'Para configurar CORS'
+    ],
+    correct: 0,
+    explanation: '@ExceptionHandler captura exceções específicas e permite devolver respostas com status e mensagem personalizados.',
+    tip: 'No AuthController, captura RuntimeException e devolve 401 com mensagem.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o ResourceNotFoundException?',
+    options: [
+      'Uma exceção do Spring',
+      'Uma exceção personalizada que devolve HTTP 404',
+      'Um erro de base de dados',
+      'Um erro de autenticação'
+    ],
+    correct: 1,
+    explanation: 'É uma exceção personalizada anotada com @ResponseStatus(HttpStatus.NOT_FOUND), usada quando um recurso não é encontrado.',
+    tip: 'Lançada nos serviços quando findByIdAndUser devolve Optional.empty().'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o Hibernate?',
+    options: [
+      'Um framework de segurança',
+      'Uma implementação do JPA (ORM) que mapeia objetos Java para tabelas SQL',
+      'Um servidor web',
+      'Uma ferramenta de build'
+    ],
+    correct: 1,
+    explanation: 'Hibernate é a implementação mais comum do JPA, responsável por gerar SQL e mapear objetos para tabelas.',
+    tip: 'No FinFlow, é usado através do spring-boot-starter-data-jpa.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o ORM?',
+    options: [
+      'Object-Relational Mapping - técnica que mapeia objetos para tabelas relacionais',
+      'Online Resource Manager',
+      'Open Runtime Module',
+      'Operational Resource Model'
+    ],
+    correct: 0,
+    explanation: 'ORM permite trabalhar com objetos em vez de SQL, facilitando o desenvolvimento.',
+    tip: 'O Hibernate é o ORM do FinFlow.'
+  },
+  {
+    topic: 'java',
+    question: 'O que significa @Column(updatable = false)?',
+    options: [
+      'A coluna é obrigatória',
+      'A coluna nunca é atualizada em operações UPDATE',
+      'A coluna é a chave primária',
+      'A coluna é única'
+    ],
+    correct: 1,
+    explanation: 'Impede que o Hibernate atualize o campo em updates. Usado em createdAt para manter a data de criação original.',
+    tip: 'A data de criação nunca deve ser alterada.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o @PrePersist?',
+    options: [
+      'Um callback executado antes de inserir uma entidade na BD',
+      'Um callback executado antes de atualizar',
+      'Uma anotação de segurança',
+      'Uma anotação de transação'
+    ],
+    correct: 0,
+    explanation: '@PrePersist é um método de ciclo de vida JPA que corre antes do primeiro INSERT, usado para inicializar campos como createdAt.',
+    tip: 'No FinFlow, define createdAt e updatedAt automaticamente.'
+  },
+  {
+    topic: 'java',
+    question: 'O que faz o método getCurrentUser() nos serviços do FinFlow?',
+    options: [
+      'Lê o utilizador da base de dados por ID',
+      'Obtém o utilizador autenticado do SecurityContextHolder',
+      'Cria um novo utilizador',
+      'Elimina o utilizador'
+    ],
+    correct: 1,
+    explanation: 'Recupera o objeto User que foi colocado no SecurityContextHolder pelo JwtAuthenticationFilter.',
+    tip: 'É usado em todos os serviços para filtrar dados por utilizador.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o pom.xml?',
+    options: [
+      'Um ficheiro de configuração do Maven que define dependências e build',
+      'Um ficheiro de configuração do Spring',
+      'Um ficheiro de logs',
+      'Um ficheiro de base de dados'
+    ],
+    correct: 0,
+    explanation: 'pom.xml (Project Object Model) é o ficheiro central do Maven, contendo dependências, plugins e propriedades do projeto.',
+    tip: 'O FinFlow usa Maven para gestão de dependências e build.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o Maven Wrapper (mvnw)?',
+    options: [
+      'Uma versão do Maven instalada globalmente',
+      'Um script que descarrega a versão correta do Maven e a executa, sem necessidade de instalação global',
+      'Um plugin de segurança',
+      'Uma ferramenta de testes'
+    ],
+    correct: 1,
+    explanation: 'O Maven Wrapper garante que todos os developers usam a mesma versão do Maven, independentemente da instalação local.',
+    tip: 'O Railway usa ./mvnw clean package para compilar o FinFlow.'
+  },
+  {
+    topic: 'java',
+    question: 'O que significa @JsonProperty(access = WRITE_ONLY)?',
+    options: [
+      'O campo é aceite na entrada mas nunca devolvido na resposta JSON',
+      'O campo é apenas de leitura',
+      'O campo é ignorado',
+      'O campo é encriptado'
+    ],
+    correct: 0,
+    explanation: 'Configuração do Jackson que permite que o campo seja desserializado (entrada) mas nunca serializado (saída).',
+    tip: 'Usado na password do User para nunca a expor nas respostas.'
+  },
+  {
+    topic: 'java',
+    question: 'O que é o RoundingMode e por que é usado no FinFlow?',
+    options: [
+      'É um modo de arredondamento para BigDecimal, usado em cálculos financeiros',
+      'É uma ferramenta de logging',
+      'É um tipo de dados',
+      'É uma anotação'
+    ],
+    correct: 0,
+    explanation: 'RoundingMode define como arredondar números decimais. O HALF_UP é o modo padrão (arredondar para cima a partir de .5).',
+    tip: 'Usado no DashboardService para calcular a percentagem de despesas sobre receitas.'
+  },
 
-  // ---------- BASE DE DADOS ----------
+  // ========== BASE DE DADOS (14 perguntas) ==========
   {
     topic: 'db',
     question: 'O que faz a propriedade spring.jpa.hibernate.ddl-auto=update?',
@@ -398,7 +953,7 @@ const questions = [
     ],
     correct: 1,
     explanation: 'ddl-auto=update compara as entidades JPA com as tabelas existentes e adiciona colunas/tabelas que faltam.',
-    tip: 'Em produção, é preferível usar ferramentas de migração como Flyway para controlo total.'
+    tip: 'Em produção, é preferível usar ferramentas de migração como Flyway.'
   },
   {
     topic: 'db',
@@ -411,10 +966,166 @@ const questions = [
     ],
     correct: 1,
     explanation: 'HikariCP é o pool de conexões padrão do Spring Boot, otimizado para alta performance.',
-    tip: 'Mantém conexões abertas para reutilização, reduzindo a latência de cada requisição.'
+    tip: 'Mantém conexões abertas para reutilização, reduzindo a latência.'
+  },
+  {
+    topic: 'db',
+    question: 'Por que o FinFlow usa PostgreSQL em vez de H2?',
+    options: [
+      'Porque PostgreSQL é mais rápido',
+      'Porque PostgreSQL é uma BD relacional robusta e o Railway oferece gratuitamente, enquanto H2 perde dados no reinício',
+      'Porque PostgreSQL é mais fácil de configurar',
+      'Porque não há alternativa'
+    ],
+    correct: 1,
+    explanation: 'PostgreSQL é uma BD robusta e adequada para produção. O Railway fornece planos gratuitos, ao contrário de H2 que é em memória e não persistente.',
+    tip: 'O HikariCP é configurado para se ligar ao PostgreSQL.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é uma FOREIGN KEY?',
+    options: [
+      'Uma chave primária',
+      'Uma restrição que garante que valores numa coluna correspondem a valores noutra tabela',
+      'Um índice',
+      'Uma coluna única'
+    ],
+    correct: 1,
+    explanation: 'FOREIGN KEY garante integridade referencial: o valor na coluna filha existe na tabela pai.',
+    tip: 'No FinFlow, user_id nas tabelas expenses e incomes é uma FK para users.id.'
+  },
+  {
+    topic: 'db',
+    question: 'Qual a diferença entre VARCHAR e TEXT no PostgreSQL?',
+    options: [
+      'VARCHAR tem limite de tamanho, TEXT não tem limite',
+      'TEXT é mais rápido',
+      'VARCHAR não pode ser indexado',
+      'Não há diferença'
+    ],
+    correct: 0,
+    explanation: 'VARCHAR(n) limita o texto a n caracteres; TEXT não tem limite (apenas o máximo da BD).',
+    tip: 'O campo avatar_url foi alterado para TEXT para suportar strings base64 longas.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é SERIAL no PostgreSQL?',
+    options: [
+      'Um tipo de dados para chaves primárias auto-incrementadas',
+      'Uma função de hash',
+      'Uma constraint de unicidade',
+      'Um índice'
+    ],
+    correct: 0,
+    explanation: 'SERIAL é um pseudo-tipo que cria uma sequência auto-incrementada, usado para chaves primárias.',
+    tip: 'O Hibernate mapeia @GeneratedValue(strategy = IDENTITY) para SERIAL.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é o DDL?',
+    options: [
+      'Data Definition Language - comandos para definir/alterar estrutura da BD (CREATE, ALTER, DROP)',
+      'Data Manipulation Language - comandos para manipular dados (INSERT, UPDATE, DELETE)',
+      'Data Control Language',
+      'Data Query Language'
+    ],
+    correct: 0,
+    explanation: 'DDL é usado para modificar o esquema da base de dados. O Hibernate com ddl-auto=update gera DDL automaticamente.',
+    tip: 'Exemplos: CREATE TABLE, ALTER TABLE, DROP COLUMN.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é o DML?',
+    options: [
+      'Data Definition Language',
+      'Data Manipulation Language - comandos para manipular dados (SELECT, INSERT, UPDATE, DELETE)',
+      'Data Control Language',
+      'Data Query Language'
+    ],
+    correct: 1,
+    explanation: 'DML é usado para ler e modificar dados. O Hibernate gera DML automaticamente a partir das operações nos repositórios.',
+    tip: 'O save() gera INSERT, delete() gera DELETE.'
+  },
+  {
+    topic: 'db',
+    question: 'O que significa initializtionFailTimeout=-1 no HikariCP?',
+    options: [
+      'Falha imediatamente se a BD não estiver disponível',
+      'Espera indefinidamente pela BD no arranque',
+      'Ignora erros de ligação',
+      'Desativa o pool'
+    ],
+    correct: 1,
+    explanation: 'O valor -1 faz com que o HikariCP aguarde indefinidamente até a BD estar disponível, resolvendo problemas de deploy no Railway.',
+    tip: 'Sem esta configuração, o deploy falharia se a BD demorasse a iniciar.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é o ALTER TABLE?',
+    options: [
+      'Um comando para modificar a estrutura de uma tabela existente',
+      'Um comando para eliminar uma tabela',
+      'Um comando para inserir dados',
+      'Um comando para criar uma tabela'
+    ],
+    correct: 0,
+    explanation: 'ALTER TABLE permite adicionar, remover ou modificar colunas e constraints.',
+    tip: 'Usado no FinFlow para alterar avatar_url de VARCHAR para TEXT e remover colunas obsoletas.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é uma constraint UNIQUE?',
+    options: [
+      'Garante que todos os valores numa coluna são diferentes',
+      'Garante que uma coluna não pode ser nula',
+      'Define a chave primária',
+      'Cria uma relação com outra tabela'
+    ],
+    correct: 0,
+    explanation: 'UNIQUE assegura que não existem duplicados numa coluna ou conjunto de colunas.',
+    tip: 'O email no User tem UNIQUE para evitar duplicados.'
+  },
+  {
+    topic: 'db',
+    question: 'Por que o FinFlow usa findByIdAndUser em vez de findById?',
+    options: [
+      'Para garantir que o recurso pertence ao utilizador autenticado (isolamento de dados)',
+      'Porque é mais rápido',
+      'Porque não há alternativa',
+      'Porque o findById não existe'
+    ],
+    correct: 0,
+    explanation: 'findByIdAndUser adiciona uma condição user_id = ? à query, garantindo que só são devolvidos recursos do utilizador autenticado.',
+    tip: 'Este método evita que um utilizador aceda a dados de outro.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é o cache de primeiro nível do Hibernate?',
+    options: [
+      'Um cache global partilhado por todas as sessões',
+      'Um cache local à sessão (transação) que evita consultas repetidas à BD',
+      'Uma cache de consultas',
+      'Uma cache de conexões'
+    ],
+    correct: 1,
+    explanation: 'O cache de primeiro nível (L1) é a cache da sessão. Se a mesma entidade for carregada duas vezes na mesma sessão, o Hibernate devolve a instância em cache, evitando uma segunda consulta.',
+    tip: 'É ativado por padrão em todas as aplicações JPA.'
+  },
+  {
+    topic: 'db',
+    question: 'O que é o Flyway e por que não foi usado no FinFlow?',
+    options: [
+      'É uma ferramenta de migração de BD, mas o FinFlow optou por ddl-auto=update por simplicidade no contexto académico',
+      'É um pool de conexões',
+      'É uma ferramenta de logging',
+      'É um tipo de BD'
+    ],
+    correct: 0,
+    explanation: 'Flyway gere migrações com scripts SQL versionados. No FinFlow, usámos ddl-auto=update para evoluir o esquema automaticamente, mas em produção seria preferível Flyway.',
+    tip: 'Flyway dá controlo total sobre as alterações ao esquema.'
   },
 
-  // ---------- FRONTEND ----------
+  // ========== FRONTEND (14 perguntas) ==========
   {
     topic: 'frontend',
     question: 'Para que serve a Fetch API no JavaScript?',
@@ -426,7 +1137,7 @@ const questions = [
     ],
     correct: 1,
     explanation: 'Fetch API é a forma moderna de fazer pedidos HTTP (GET, POST, etc.) a partir do browser.',
-    tip: 'Fetch devolve Promises, podendo ser usado com async/await para um código mais limpo.'
+    tip: 'Fetch devolve Promises, podendo ser usado com async/await.'
   },
   {
     topic: 'frontend',
@@ -439,10 +1150,166 @@ const questions = [
     ],
     correct: 1,
     explanation: 'toLocaleString() formata valores monetários, datas e números no formato da região definida.',
-    tip: 'Use {style:"currency", currency:"EUR"} para exibir valores em euros corretamente.'
+    tip: 'Use {style:"currency", currency:"EUR"} para exibir valores em euros.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que é o localStorage?',
+    options: [
+      'Uma base de dados relacional',
+      'Um armazenamento persistente no browser para pares chave-valor',
+      'Uma API de ficheiros',
+      'Um servidor de cache'
+    ],
+    correct: 1,
+    explanation: 'localStorage guarda dados no browser, persistente entre sessões, acessível apenas pelo domínio que o criou.',
+    tip: 'O FinFlow guarda o JWT em localStorage.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que significa async/await?',
+    options: [
+      'Uma forma de declarar funções síncronas',
+      'Uma sintaxe para trabalhar com Promises de forma mais legível, como se fosse código síncrono',
+      'Uma biblioteca de rede',
+      'Um tipo de dados'
+    ],
+    correct: 1,
+    explanation: 'async/await simplifica o código assíncrono, permitindo escrever lógica com Promises sem encadeamento de .then().',
+    tip: 'O api.js usa async/await para fazer pedidos HTTP.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que faz Promise.all()?',
+    options: [
+      'Executa Promises em sequência',
+      'Executa várias Promises em paralelo e aguarda que todas terminem',
+      'Cria uma nova Promise',
+      'Cancela todas as Promises'
+    ],
+    correct: 1,
+    explanation: 'Promise.all() recebe um array de Promises e devolve uma Promise que resolve quando todas estiverem concluídas.',
+    tip: 'Usado no despesas.js para carregar receitas e despesas em simultâneo.'
+  },
+  {
+    topic: 'frontend',
+    question: 'Para que serve o try/catch no JavaScript?',
+    options: [
+      'Para declarar variáveis',
+      'Para capturar e tratar exceções',
+      'Para iterar arrays',
+      'Para criar funções'
+    ],
+    correct: 1,
+    explanation: 'try/catch permite capturar erros em tempo de execução e tratá-los de forma controlada, sem interromper a execução.',
+    tip: 'Usado no api.js para lidar com erros de rede e respostas HTTP.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que é o FileReader no browser?',
+    options: [
+      'Uma ferramenta para escrever ficheiros',
+      'Uma API para ler o conteúdo de ficheiros locais',
+      'Um serviço de upload',
+      'Um protocolo de transferência'
+    ],
+    correct: 1,
+    explanation: 'FileReader permite ler ficheiros selecionados pelo utilizador sem os enviar para o servidor, convertendo-os para texto ou base64.',
+    tip: 'Usado no perfil.html para converter a imagem de avatar para base64.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que faz e.preventDefault()?',
+    options: [
+      'Impede o comportamento padrão de um evento, como a submissão de um formulário',
+      'Previne a execução de JavaScript',
+      'Para o loop de eventos',
+      'Cria um novo evento'
+    ],
+    correct: 0,
+    explanation: 'e.preventDefault() impede o comportamento padrão do navegador, como recarregar a página ao submeter um formulário.',
+    tip: 'Usado em todos os formulários do FinFlow para enviar via AJAX.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que é CSS Flexbox?',
+    options: [
+      'Um sistema de layout CSS para distribuir elementos de forma flexível',
+      'Uma biblioteca JavaScript',
+      'Um tipo de fonte',
+      'Uma ferramenta de design'
+    ],
+    correct: 0,
+    explanation: 'Flexbox é um modelo de layout que facilita o alinhamento e distribuição de elementos em containers, com suporte a responsividade.',
+    tip: 'Usado em toda a interface do FinFlow para alinhar elementos e criar grelhas.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que são CSS Media Queries?',
+    options: [
+      'Regras que aplicam estilos diferentes consoante as características do dispositivo (ex: largura do ecrã)',
+      'Consultas a uma base de dados',
+      'Requisições HTTP',
+      'Funções JavaScript'
+    ],
+    correct: 0,
+    explanation: 'Media queries permitem criar layouts responsivos, adaptando o design a diferentes tamanhos de ecrã.',
+    tip: 'Usadas para tornar o frontend do FinFlow responsivo em telemóveis e tablets.'
+  },
+  {
+    topic: 'frontend',
+    question: 'Para que serve JSON.stringify()?',
+    options: [
+      'Converte uma string JSON em objeto JavaScript',
+      'Converte um objeto JavaScript em string JSON',
+      'Faz parsing de JSON',
+      'Valida JSON'
+    ],
+    correct: 1,
+    explanation: 'JSON.stringify() serializa um objeto para uma string JSON, pronta para ser enviada no corpo de um pedido HTTP.',
+    tip: 'Usado no api.js para preparar o corpo dos pedidos POST e PUT.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que é o Chart.js?',
+    options: [
+      'Uma biblioteca JavaScript para criar gráficos interativos',
+      'Uma ferramenta de edição de imagens',
+      'Um framework CSS',
+      'Um servidor de gráficos'
+    ],
+    correct: 0,
+    explanation: 'Chart.js é uma biblioteca open-source que permite renderizar gráficos em HTML5 Canvas, com suporte a linha, barra, pizza, etc.',
+    tip: 'Usado no dashboard do FinFlow para mostrar o fluxo de caixa.'
+  },
+  {
+    topic: 'frontend',
+    question: 'O que significa "CORS preflight"?',
+    options: [
+      'Um pedido OPTIONS enviado pelo browser antes de pedidos complexos para verificar permissões CORS',
+      'Uma técnica de otimização de cache',
+      'Um ataque de segurança',
+      'Um protocolo de autenticação'
+    ],
+    correct: 0,
+    explanation: 'O preflight é um pedido OPTIONS que o browser envia antes de pedidos com cabeçalhos como Authorization, para verificar se o servidor autoriza a origem.',
+    tip: 'No FinFlow, permitimos OPTIONS para todas as rotas no SecurityConfig.'
+  },
+  {
+    topic: 'frontend',
+    question: 'Como o FinFlow guarda o token JWT no browser?',
+    options: [
+      'Num cookie',
+      'Em localStorage (com as chaves "token" e "finflow_token")',
+      'Em sessionStorage',
+      'Num ficheiro de texto'
+    ],
+    correct: 1,
+    explanation: 'O token é guardado em localStorage para persistência entre sessões, permitindo que o utilizador se mantenha autenticado após fechar o browser.',
+    tip: 'O api.js lê o token de localStorage e adiciona ao header Authorization.'
   },
 
-  // ---------- ANDROID ----------
+  // ========== ANDROID (12 perguntas) ==========
   {
     topic: 'android',
     question: 'No Jetpack Compose, qual função é usada para criar uma lista que renderiza apenas os itens visíveis?',
@@ -459,8 +1326,138 @@ const questions = [
     explanation: 'Retrofit permite definir endpoints com anotações @GET, @POST, etc., e gera a implementação automaticamente.',
     tip: 'Retrofit normalmente é combinado com OkHttp para o transporte e interceptors.'
   },
+  {
+    topic: 'android',
+    question: 'O que são corrotinas no Kotlin?',
+    options: [
+      'Uma forma de fazer threading manual',
+      'Um mecanismo para programação assíncrona sem callbacks, usando funções suspend',
+      'Uma biblioteca de UI',
+      'Um tipo de dados'
+    ],
+    correct: 1,
+    explanation: 'Corrotinas permitem escrever código assíncrono de forma sequencial, com funções suspend e escopos como launch.',
+    tip: 'Todas as chamadas à API no FinFlow Android são feitas com corrotinas.'
+  },
+  {
+    topic: 'android',
+    question: 'O que é a anotação @Composable no Jetpack Compose?',
+    options: [
+      'Define uma função que descreve a UI e pode ser recomposta quando o estado muda',
+      'Marca uma classe como Activity',
+      'Define um serviço',
+      'Cria uma base de dados'
+    ],
+    correct: 0,
+    explanation: '@Composable é a base do Jetpack Compose: funções que descrevem a UI de forma declarativa e reativa.',
+    tip: 'Todos os ecrãs do FinFlow Android são funções @Composable.'
+  },
+  {
+    topic: 'android',
+    question: 'O que é o TokenManager no FinFlow Android?',
+    options: [
+      'Uma classe que gere o token JWT usando SharedPreferences',
+      'Um controlador de rede',
+      'Uma Activity',
+      'Uma interface Retrofit'
+    ],
+    correct: 0,
+    explanation: 'TokenManager é responsável por guardar, ler e limpar o token JWT, nome e email usando SharedPreferences.',
+    tip: 'Equivalente ao localStorage do browser, mas para Android.'
+  },
+  {
+    topic: 'android',
+    question: 'O que é o Logcat no Android Studio?',
+    options: [
+      'Uma ferramenta de debugging que exibe logs da aplicação',
+      'Um compilador',
+      'Um gerenciador de dependências',
+      'Um emulador'
+    ],
+    correct: 0,
+    explanation: 'Logcat mostra mensagens de log da aplicação, úteis para debugging, com níveis como DEBUG, INFO, ERROR.',
+    tip: 'O HttpLoggingInterceptor regista todos os pedidos e respostas no Logcat.'
+  },
+  {
+    topic: 'android',
+    question: 'O que é o SharedPreferences?',
+    options: [
+      'Uma base de dados SQLite',
+      'Um armazenamento local de pares chave-valor persistente',
+      'Uma cache de rede',
+      'Uma biblioteca de UI'
+    ],
+    correct: 1,
+    explanation: 'SharedPreferences é um armazenamento leve para dados simples (string, int, boolean) persistente entre sessões.',
+    tip: 'O TokenManager usa SharedPreferences para guardar o JWT.'
+  },
+  {
+    topic: 'android',
+    question: 'O que é o Scaffold no Jetpack Compose?',
+    options: [
+      'Um layout base que fornece slots para top bar, bottom bar, FAB e conteúdo',
+      'Um tipo de lista',
+      'Uma função de navegação',
+      'Um gerenciador de estado'
+    ],
+    correct: 0,
+    explanation: 'Scaffold implementa a estrutura de Material Design, com componentes como top bar, bottom bar e floating action button.',
+    tip: 'A MainActivity do FinFlow Android usa Scaffold para organizar a UI.'
+  },
+  {
+    topic: 'android',
+    question: 'O que faz o método onResume() numa Activity Android?',
+    options: [
+      'É chamado quando a Activity é criada',
+      'É chamado quando a Activity volta a ficar visível',
+      'É chamado quando a Activity é destruída',
+      'É chamado quando a Activity é pausada'
+    ],
+    correct: 1,
+    explanation: 'onResume() é executado sempre que a Activity fica visível, útil para atualizar dados após regressar de outras activities.',
+    tip: 'No FinFlow, onResume() atualiza o dashboard e as listas.'
+  },
+  {
+    topic: 'android',
+    question: 'O que são Intents no Android?',
+    options: [
+      'Mecanismo para comunicar entre componentes (Activities, Services) e iniciar novas Activities',
+      'Um tipo de dados',
+      'Uma biblioteca de rede',
+      'Um serviço de fundo'
+    ],
+    correct: 0,
+    explanation: 'Intents permitem iniciar Activities, Services e Broadcasts, podendo transportar dados (extras).',
+    tip: 'Usados para abrir AddExpenseActivity a partir da MainActivity.'
+  },
+  {
+    topic: 'android',
+    question: 'O que é o LaunchedEffect no Jetpack Compose?',
+    options: [
+      'Um efeito que corre uma corrotina quando uma chave muda',
+      'Uma função de UI',
+      'Um tipo de layout',
+      'Uma classe de dados'
+    ],
+    correct: 0,
+    explanation: 'LaunchedEffect executa código assíncrono (corrotina) num escopo Compose, reagindo a mudanças de estado.',
+    tip: 'Usado para carregar dados quando a MainActivity é retomada.'
+  },
+  {
+    topic: 'android',
+    question: 'Como o FinFlow Android lida com a autenticação em todos os pedidos HTTP?',
+    options: [
+      'Adiciona o token manualmente em cada chamada',
+      'Usa um interceptor do OkHttp que adiciona automaticamente o header Authorization',
+      'Usa cookies',
+      'Não usa autenticação'
+    ],
+    correct: 1,
+    explanation: 'O RetrofitClient.kt adiciona um interceptor ao OkHttp que lê o token do TokenManager e adiciona o header Authorization a todos os pedidos automaticamente.',
+    tip: 'Assim, não é necessário repetir código em cada chamada à API.'
+  },
 
-  // ---------- INFRA ----------
+  // ========== INFRA / DEVOPS (10 perguntas) ==========
   {
     topic: 'infra',
     question: 'O que é uma variável de ambiente no contexto de deploy?',
@@ -476,16 +1473,252 @@ const questions = [
   },
   {
     topic: 'infra',
-    question: 'Para que serve o endpoint /api/health no FinFlow?',
+    question: 'O que é o Railway?',
     options: [
-      'Para autenticação',
-      'Para verificar se a aplicação e a base de dados estão operacionais',
-      'Para listar todas as despesas',
-      'Para atualizar o perfil do utilizador'
+      'Uma plataforma de cloud (PaaS) que faz deploy automático a partir do Git',
+      'Uma ferramenta de testes',
+      'Um tipo de base de dados',
+      'Um editor de código'
+    ],
+    correct: 0,
+    explanation: 'Railway é uma PaaS (Platform as a Service) que hospeda aplicações e faz build/deploy automático a partir de repositórios Git.',
+    tip: 'O FinFlow backend e a BD estão hospedados no Railway.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é CI/CD?',
+    options: [
+      'Continuous Integration / Continuous Deployment - práticas de automatizar testes e deploy',
+      'Continuous Interface / Continuous Design',
+      'Code Integration / Code Deployment',
+      'Centralized Infrastructure / Centralized Development'
+    ],
+    correct: 0,
+    explanation: 'CI/CD automatiza a integração de código (testes) e o deploy para produção, reduzindo erros manuais.',
+    tip: 'O Railway fornece CD automático a partir do Git.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é um Webhook?',
+    options: [
+      'Um callback HTTP acionado por eventos (ex: push no Git)',
+      'Um tipo de API',
+      'Uma ferramenta de logging',
+      'Um servidor web'
+    ],
+    correct: 0,
+    explanation: 'Webhooks são notificações HTTP enviadas para um serviço quando ocorre um evento, como um push no GitHub.',
+    tip: 'O Railway usa webhooks para detetar alterações no repositório.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é SSL/TLS?',
+    options: [
+      'Protocolos de encriptação que garantem comunicações seguras na internet (HTTPS)',
+      'Um sistema de gestão de base de dados',
+      'Uma ferramenta de deploy',
+      'Um tipo de certificado de identidade'
+    ],
+    correct: 0,
+    explanation: 'SSL/TLS encriptam os dados entre cliente e servidor, garantindo confidencialidade e integridade.',
+    tip: 'O Railway fornece SSL automaticamente para todos os subdomínios.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é o DNS?',
+    options: [
+      'Domain Name System - traduz domínios (ex: finflow-backend.up.railway.app) em endereços IP',
+      'Um protocolo de transferência de ficheiros',
+      'Um sistema de cache',
+      'Um protocolo de autenticação'
+    ],
+    correct: 0,
+    explanation: 'DNS é o sistema que resolve nomes de domínio para endereços IP, permitindo que os browsers encontrem os servidores.',
+    tip: 'O URL do Railway é resolvido pelo DNS.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é o Health Check no FinFlow?',
+    options: [
+      'Um endpoint que verifica a saúde da aplicação e da BD',
+      'Um teste de desempenho',
+      'Uma ferramenta de log',
+      'Um serviço de autenticação'
+    ],
+    correct: 0,
+    explanation: 'O /api/health devolve status, uptime e estado da BD, usado para monitorização.',
+    tip: 'O Railway pode usar este endpoint para verificar se o deploy foi bem-sucedido.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é o rate limiting e por que seria útil no FinFlow?',
+    options: [
+      'Limitar o número de pedidos por utilizador para prevenir ataques de força bruta e sobrecarga',
+      'Aumentar a velocidade da aplicação',
+      'Reduzir custos de hospedagem',
+      'Melhorar o design da UI'
+    ],
+    correct: 0,
+    explanation: 'Rate limiting protege contra ataques de força bruta no login e uso excessivo da API, garantindo estabilidade.',
+    tip: 'Sugerido como melhoria de segurança para o FinFlow.'
+  },
+  {
+    topic: 'infra',
+    question: 'O que é o deploy automático no Railway?',
+    options: [
+      'Cada push ao Git desencadeia build e deploy automáticos',
+      'Requer intervenção manual',
+      'Só acontece ao fim de semana',
+      'É desativado por defeito'
+    ],
+    correct: 0,
+    explanation: 'O Railway deteta mudanças no repositório, corre o build (mvn package) e faz deploy do novo JAR automaticamente.',
+    tip: 'Isto garante que a produção está sempre atualizada.'
+  },
+  {
+    topic: 'infra',
+    question: 'Para que serve o ficheiro application.properties.example?',
+    options: [
+      'É a configuração real usada em produção',
+      'É um modelo que documenta as variáveis de ambiente necessárias, sem valores reais, para ser versionado no Git',
+      'É um ficheiro de logs',
+      'É um ficheiro de testes'
     ],
     correct: 1,
-    explanation: 'O health check é usado por ferramentas de monitorização para confirmar que o serviço está disponível.',
-    tip: 'Devolve status, uptime e estado da ligação à base de dados.'
+    explanation: 'Este ficheiro de exemplo permite que qualquer developer saiba quais variáveis configurar, sem expor credenciais sensíveis.',
+    tip: 'Boa prática de segurança: nunca commitar credenciais reais.'
+  },
+
+  // ========== ARQUITETURA E CONCEITOS GERAIS (10 perguntas) ==========
+  {
+    topic: 'arquitetura',
+    question: 'Qual a arquitetura do FinFlow em termos de camadas?',
+    options: [
+      'Monolítica com três camadas: Controller, Service, Repository',
+      'Microsserviços',
+      'Cliente-Servidor sem camadas',
+      'P2P'
+    ],
+    correct: 0,
+    explanation: 'O FinFlow segue a arquitetura em três camadas: Controladores (HTTP), Serviços (lógica de negócio) e Repositórios (acesso a dados), típica de aplicações Spring Boot.',
+    tip: 'Esta separação facilita a manutenção e os testes.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'Por que o FinFlow tem três componentes separados (backend, web, Android)?',
+    options: [
+      'Porque são unidades curriculares diferentes, mas partilham a mesma API',
+      'Porque é mais fácil desenvolver assim',
+      'Porque não há alternativa',
+      'Porque é uma exigência do formador'
+    ],
+    correct: 0,
+    explanation: 'O projeto foi dividido para corresponder a diferentes unidades curriculares, mas todos os componentes usam a mesma API REST, demonstrando a versatilidade de uma arquitetura cliente-servidor.',
+    tip: 'A mesma API serve o browser e o Android sem alterações.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que é o Spring MVC?',
+    options: [
+      'Model-View-Controller - padrão usado no Spring para separar lógica de apresentação',
+      'Uma ferramenta de deploy',
+      'Um tipo de base de dados',
+      'Um serviço de autenticação'
+    ],
+    correct: 0,
+    explanation: 'Spring MVC é o módulo do Spring que implementa o padrão MVC, onde os controladores processam pedidos e devolvem respostas (JSON no caso REST).',
+    tip: 'No FinFlow, a View é substituída por JSON.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que é a injeção de dependências (DI)?',
+    options: [
+      'O Spring cria e injeta objetos (beans) automaticamente, em vez de o programador usar "new"',
+      'Uma técnica de otimização de memória',
+      'Um padrão de segurança',
+      'Uma ferramenta de testes'
+    ],
+    correct: 0,
+    explanation: 'A injeção de dependências é um padrão onde o framework fornece as dependências a um objeto, promovendo baixo acoplamento.',
+    tip: 'Usamos @Autowired para injetar repositórios nos serviços.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que é o IoC Container?',
+    options: [
+      'O contentor Spring que gere o ciclo de vida dos beans',
+      'Um tipo de servidor web',
+      'Uma base de dados',
+      'Um sistema de ficheiros'
+    ],
+    correct: 0,
+    explanation: 'O IoC (Inversion of Control) container gerencia a criação, configuração e destruição dos beans no Spring.',
+    tip: 'O ApplicationContext é o IoC container no Spring Boot.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que é um "bean" no Spring?',
+    options: [
+      'Um objeto Java qualquer',
+      'Um objeto gerido pelo container IoC',
+      'Uma classe anotada com @Entity',
+      'Um método de serviço'
+    ],
+    correct: 1,
+    explanation: 'Beans são objetos instanciados e geridos pelo Spring. Podem ser criados com @Component, @Service, @Repository ou @Bean.',
+    tip: 'O Spring injeta beans automaticamente com @Autowired.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que é o Tomcat embutido no Spring Boot?',
+    options: [
+      'Um servidor web/servlet container que processa pedidos HTTP, integrado no JAR da aplicação',
+      'Uma base de dados',
+      'Um compilador Java',
+      'Uma ferramenta de testes'
+    ],
+    correct: 0,
+    explanation: 'O Tomcat embutido permite executar a aplicação Spring Boot como um JAR autónomo, sem necessidade de instalar um servidor separado.',
+    tip: 'Quando executamos java -jar, o Tomcat inicia automaticamente.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que significa a separação entre frontend e backend no FinFlow?',
+    options: [
+      'O frontend é a interface do utilizador (browser ou Android), o backend é a API REST que processa dados',
+      'São a mesma coisa',
+      'O frontend é o servidor',
+      'Não há separação'
+    ],
+    correct: 0,
+    explanation: 'O frontend (web/Android) é responsável pela UI e interação, enquanto o backend (Spring Boot) fornece a API e a lógica de negócio.',
+    tip: 'Esta separação permite que cada parte seja desenvolvida independentemente.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'O que é um "stub" ou "mock" em testes?',
+    options: [
+      'Um objeto simulado que substitui dependências reais para isolar a unidade a testar',
+      'Um objeto real',
+      'Uma base de dados de teste',
+      'Uma ferramenta de logging'
+    ],
+    correct: 0,
+    explanation: 'Mocks são objetos simulados que imitam o comportamento de dependências, permitindo testar uma unidade de forma isolada.',
+    tip: 'O Mockito é uma framework popular para criar mocks em Java.'
+  },
+  {
+    topic: 'arquitetura',
+    question: 'Por que o FinFlow usa JWT em vez de autenticação baseada em sessão?',
+    options: [
+      'Porque é mais seguro',
+      'Porque permite stateless, escalabilidade e suporte a múltiplos clientes (web, Android)',
+      'Porque é mais fácil de implementar',
+      'Porque é obrigatório'
+    ],
+    correct: 1,
+    explanation: 'JWT elimina a necessidade de sessões no servidor, facilitando a escalabilidade horizontal e suportando diferentes tipos de clientes.',
+    tip: 'O SecurityConfig define SessionCreationPolicy.STATELESS.'
   }
 ];
 
@@ -649,7 +1882,6 @@ const app = {
       this.currentIndex++;
       this.renderQuestion();
     } else {
-      // Fim do quiz
       this.showResult();
     }
   },
@@ -664,19 +1896,12 @@ const app = {
     this.el.finalScore.textContent = `${percent}%`;
     this.el.finalDetail.textContent = `Acertaste ${correct} de ${total} perguntas.`;
 
-    // Estatísticas por tópico (se houver mais de uma pergunta por tópico)
+    // Estatísticas por tópico (aproximadas)
     const stats = {};
     this.filteredQuestions.forEach(q => {
-      if (!stats[q.topic]) stats[q.topic] = { total: 0, correct: 0 };
+      if (!stats[q.topic]) stats[q.topic] = { total: 0 };
       stats[q.topic].total++;
     });
-    // Precisamos de saber quantas acertou por tópico – para isso, percorremos as perguntas e comparamos com a resposta selecionada.
-    // Como não guardamos o histórico, vamos estimar com base na pontuação geral.
-    // Melhor: recalcular com base nas respostas (não guardadas). Vamos apenas mostrar a pontuação geral.
-
-    // Para simplificar, mostramos apenas a pontuação geral.
-    this.el.perTopicStats.innerHTML = '';
-    // Opcional: mostrar distribuição geral
     const topics = Object.keys(stats);
     if (topics.length > 1) {
       let html = '<div style="margin-top:0.5rem;font-weight:600;">Temas abrangidos:</div><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">';
@@ -686,6 +1911,8 @@ const app = {
       });
       html += '</div>';
       this.el.perTopicStats.innerHTML = html;
+    } else {
+      this.el.perTopicStats.innerHTML = '';
     }
 
     this.el.resetBtn.style.display = 'inline-block';
