@@ -225,6 +225,75 @@
     font-size: 11px;
   }
 }
+
+  /* ===== CABEÇALHO ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0b2b44;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.header h1 span {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #64748b;
+  margin-left: 6px;
+}
+.btn-voltar {
+  background: #e2e8f0;
+  color: #1e293b;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.btn-voltar:hover {
+  background: #cbd5e1;
+}
+.btn-voltar svg {
+  width: 18px;
+  height: 18px;
+}
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 1rem;
+  }
+  .header h1 {
+    font-size: 1.3rem;
+    justify-content: center;
+  }
+  .btn-voltar {
+    justify-content: center;
+    padding: 10px;
+  }
+}
+
 </style>
 
 <div class="dict-wrap">
